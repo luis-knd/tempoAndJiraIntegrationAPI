@@ -1,0 +1,95 @@
+services:
+  app:
+    container_name: tempo_and_jira_api
+    build:
+      context: ./docker
+      dockerfile: nginx.dockerfile
+      args:
+        - UID=${UID:-1000}
+        - GID=${GID:-1000}
+    ports:
+      - "80:80"
+    volumes:
+      - ./src:/var/www/html:delegated
+    depends_on:
+      - php
+      - redis
+      - mysql
+    networks:
+      - tempo_and_jira_network
+
+  mysql:
+    container_name: tempo_and_jira_db
+    image: mysql:8.0
+    restart: unless-stopped
+    tty: true
+    ports:
+      - "3306:3306"
+    environment:
+      MYSQL_DATABASE: tempo_and_jira
+      MYSQL_USER: lcandelario
+      MYSQL_PASSWORD: lcandelario
+      MYSQL_ROOT_PASSWORD: root_password
+      SERVICE_TAGS: dev
+      SERVICE_NAME: mysql
+    networks:
+      - tempo_and_jira_network
+
+  artisan:
+    container_name: tempo_and_jira_artisan
+    build:
+      context: ./docker
+      dockerfile: php.dockerfile
+      args:
+        - UID=${UID:-1000}
+        - GID=${GID:-1000}
+    volumes:
+      - ./src:/var/www/html:delegated
+    depends_on:
+      - mysql
+    entrypoint: [ 'php', '/var/www/html/artisan' ]
+    networks:
+      - tempo_and_jira_network
+
+  php:
+    container_name: tempo_and_jira_php
+    build:
+      context: ./docker
+      dockerfile: php.dockerfile
+      args:
+        - UID=${UID:-1000}
+        - GID=${GID:-1000}
+    ports:
+      - "9000:9000"
+    volumes:
+      - ./src:/var/www/html:delegated
+    networks:
+      - tempo_and_jira_network
+
+  redis:
+    container_name: tempo_and_jira_redis
+    image: redis:alpine
+    restart: unless-stopped
+    ports:
+      - "6379:6379"
+    networks:
+      - tempo_and_jira_network
+
+  composer:
+    container_name: tempo_and_jira_composer
+    build:
+      context: ./docker
+      dockerfile: php.dockerfile
+      args:
+        - UID=${UID:-1000}
+        - GID=${GID:-1000}
+    volumes:
+      - ./src:/var/www/html
+    depends_on:
+      - php
+    entrypoint: [ 'composer', '--ignore-platform-reqs' ]
+    networks:
+      - tempo_and_jira_network
+
+networks:
+  tempo_and_jira_network:
