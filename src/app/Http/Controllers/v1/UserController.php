@@ -4,7 +4,10 @@ namespace App\Http\Controllers\v1;
 
 use App\Http\Controllers\Controller;
 use App\Http\Requests\v1\CreateUserRequest;
+use App\Http\Requests\v1\UpdateUserRequest;
+use App\Http\Resources\UserResource;
 use App\Models\v1\User;
+use Faker\Core\Uuid;
 use Illuminate\Http\JsonResponse;
 use Illuminate\Http\Request;
 
@@ -21,14 +24,13 @@ class UserController extends Controller
     /**
      * Store a newly created resource in storage.
      *
-     * @param \App\Http\Requests\v1\CreateUserRequest $request
-     * @return \Illuminate\Http\JsonResponse
-     *
+     * @param CreateUserRequest $request The request object containing the user data.
+     * @return JsonResponse The JSON response containing the created user.
      */
     public function store(CreateUserRequest $request): JsonResponse
     {
         $user = User::create($request->all());
-        return jsonResponse(['user' => $user]);
+        return jsonResponse(['user' => UserResource::make($user)]);
     }
 
     /**
@@ -41,10 +43,15 @@ class UserController extends Controller
 
     /**
      * Update the specified resource in storage.
+     *
+     * @param UpdateUserRequest $request The request object containing the updated user data.
+     * @return JsonResponse The JSON response containing the updated user.
      */
-    public function update(Request $request, string $id)
+    public function update(UpdateUserRequest $request): JsonResponse
     {
-        //
+        auth()->user()->update($request->validated());
+        $user = UserResource::make(auth()->user()->fresh());
+        return jsonResponse(compact('user'));
     }
 
     /**
