@@ -4,6 +4,7 @@ namespace Tests\Feature;
 
 use App\Models\v1\User;
 use Database\Seeders\UserSeeder;
+use Faker\Factory;
 use Illuminate\Foundation\Testing\RefreshDatabase;
 use Illuminate\Support\Facades\Hash;
 use PHPUnit\Framework\Attributes\Test;
@@ -18,6 +19,7 @@ class UpdateUserDataTest extends TestCase
     {
         parent::setUp();
         $this->seed(UserSeeder::class);
+        $this->faker = Factory::create();
     }
 
     #[Test]

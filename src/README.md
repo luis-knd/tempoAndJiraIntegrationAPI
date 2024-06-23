@@ -11,6 +11,7 @@ utilizes SOLID design patterns, and is built with modularity and scalability in 
 - [Project Setup](#project-setup)
 - [Pre Commit Configuration](#pre-commit-configuration)
 - [Run Tests](#run-tests)
+- [Documentation](#documentation)
 
 
 ## Prerequisites
@@ -119,4 +120,13 @@ I'm ussing [pre-commit framework](https://pre-commit.com/index.html) to have goo
 To run the tests, execute the next command:
 ```bash
 docker-compose run --rm artisan test
+```
+
+### Documentation
+This API use Swagger specifically this [library](https://github.com/Mezatsong/laravel-swagger-docs). To see the documentation,
+go to this [URL](http://127.0.0.1/api/documentation/).
+
+To generate the documentation, run the next command:
+```bash
+docker-compose run --rm artisan swagger:generate
 ```

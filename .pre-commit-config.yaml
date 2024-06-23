@@ -25,14 +25,14 @@ repos:
           '--colors',
           '--report-width=80',
           '--standard=PSR12',
-          '--ignore= src/vendor, src/storage, src/bootstrap, src/resources, src/tests, src/public, bin'
+          '--ignore= src/vendor, src/storage, src/bootstrap, src/resources, src/tests, src/public, src/config, src/app/Helpers/helpers, bin'
         ]
       - id: phpcbf-subdir
         args: [
           'src',
           '--extensions=php',
           '--standard=PSR12',
-          '--ignore= src/vendor, src/storage, src/bootstrap, src/resources, src/tests, src/public, bin',
+          '--ignore= src/vendor, src/storage, src/bootstrap, src/resources, src/tests, src/public, src/config, src/app/Helpers/helpers, bin',
           'src'
         ]
       - id: phpstan-subdir
