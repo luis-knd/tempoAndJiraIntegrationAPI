@@ -3,7 +3,7 @@
 namespace App\Http\Controllers\v1\Auth;
 
 use App\Http\Controllers\Controller;
-use App\Http\Requests\v1\LoginRequest;
+use App\Http\Requests\v1\Auth\LoginRequest;
 use Illuminate\Http\JsonResponse;
 use Illuminate\Http\Request;
 use Symfony\Component\HttpFoundation\Response;

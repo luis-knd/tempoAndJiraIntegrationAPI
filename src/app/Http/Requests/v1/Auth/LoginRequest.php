@@ -1,17 +1,17 @@
 <?php
 
-namespace App\Http\Requests\v1;
+namespace App\Http\Requests\v1\Auth;
 
-use Illuminate\Foundation\Http\FormRequest;
+use App\Http\Requests\BaseRequest;
 
-class UpdateUserRequest extends FormRequest
+class LoginRequest extends BaseRequest
 {
     /**
      * Determine if the user is authorized to make this request.
      */
     public function authorize(): bool
     {
-        return auth()->check();
+        return true;
     }
 
     /**
@@ -22,8 +22,8 @@ class UpdateUserRequest extends FormRequest
     public function rules(): array
     {
         return [
-            'name' => 'required|min:2',
-            'lastname' => 'required|min:2',
+            'email'    => 'required|string|email',
+            'password' => 'required|min:8',
         ];
     }
 }

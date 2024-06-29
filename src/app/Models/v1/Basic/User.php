@@ -1,8 +1,7 @@
 <?php
 
-namespace App\Models\v1;
+namespace App\Models\v1\Basic;
 
-// use Illuminate\Contracts\Auth\MustVerifyEmail;
 use Illuminate\Database\Eloquent\Concerns\HasUuids;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\SoftDeletes;
@@ -13,10 +12,16 @@ use Tymon\JWTAuth\Contracts\JWTSubject;
 /**
  * Class User
  *
+ * @property string $name
+ * @property string $lastname
+ * @property string $email
+ * @property string $password
+ * @method static create(array $all)
+ * @method static first()
+ *
  * @package   App\Models
  * @copyright 06-2024 Lcandesign
  * @author    Luis Candelario <lcandelario@lcandesign.com>
- * @method static create(array $all)
  */
 class User extends Authenticatable implements JWTSubject
 {

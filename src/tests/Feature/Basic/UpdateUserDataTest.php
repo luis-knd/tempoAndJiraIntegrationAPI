@@ -1,8 +1,8 @@
 <?php
 
-namespace Tests\Feature;
+namespace Tests\Feature\Basic;
 
-use App\Models\v1\User;
+use App\Models\v1\Basic\User;
 use Database\Seeders\UserSeeder;
 use Faker\Factory;
 use Illuminate\Foundation\Testing\RefreshDatabase;
@@ -10,6 +10,7 @@ use Illuminate\Support\Facades\Hash;
 use PHPUnit\Framework\Attributes\Test;
 use Symfony\Component\HttpFoundation\Response;
 use Tests\TestCase;
+use function PHPUnit\Framework\assertFalse;
 
 class UpdateUserDataTest extends TestCase
 {
@@ -165,5 +166,36 @@ class UpdateUserDataTest extends TestCase
         $response->assertStatus(Response::HTTP_OK);
         $response->assertJsonStructure(['message', 'data', 'status', 'errors']);
         $this->assertFalse(Hash::check('password_modified', $user->password));
+    }
+
+    #[Test]
+    public function an_authenticated_user_cannot_modify_data_of_other_user(): void
+    {
+        // Create a new user
+        $newUserData = [
+            'email' => 'contacto@lcandesign.com',
+            'password' => 'password',
+            'name' => 'Contacto',
+            'lastname' => 'Gonzalez',
+        ];
+        $createUserResponse = $this->postJson("$this->apiBaseUrl/users", $newUserData);
+
+        // Log in as a different user
+        $credentials = ['email' => 'lcandelario@lcandesign.com', 'password' => 'password'];
+        $this->post("$this->apiBaseUrl/login", $credentials);
+
+        // Prepare new data for updating
+        $newData = [
+            'password' => 'password_modified',
+            'name' => 'Luis Rafael',
+            'lastname' => 'Candelario Gonzalez',
+        ];
+        $userNew = User::all()->where('id', '=', $createUserResponse->json('data.user.id'))->first();
+
+        // Modify the data of the new user using the authenticated user
+        $response = $this->apiAs(user: $userNew, method: 'put', uri: "$this->apiBaseUrl/users/" . $userNew->id, data: $newData);
+
+        $response->assertStatus(Response::HTTP_UNAUTHORIZED);
+        $response->assertJsonFragment(['message' => 'This action is unauthorized.']);
     }
 }

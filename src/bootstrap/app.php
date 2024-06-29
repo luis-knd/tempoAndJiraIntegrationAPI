@@ -5,6 +5,7 @@ use Illuminate\Foundation\Configuration\Exceptions;
 use Illuminate\Foundation\Configuration\Middleware;
 use Illuminate\Validation\ValidationException;
 use Symfony\Component\HttpFoundation\Response;
+use Symfony\Component\HttpKernel\Exception\AccessDeniedHttpException;
 
 return Application::configure(basePath: dirname(__DIR__))
     ->withRouting(
@@ -24,6 +25,12 @@ return Application::configure(basePath: dirname(__DIR__))
                     status: Response::HTTP_UNPROCESSABLE_ENTITY,
                     message: $throwable->getMessage(),
                     errors: $throwable->errors()
+                );
+            });
+            $exceptions->render(function (AccessDeniedHttpException $throwable) {
+                return jsonResponse(
+                    status: Response::HTTP_UNAUTHORIZED,
+                    message: $throwable->getMessage()
                 );
             });
             $exceptions->render(function (Exception $throwable) {

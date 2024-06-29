@@ -2,7 +2,7 @@
 
 namespace Tests\Feature\Auth;
 
-use App\Models\v1\User;
+use App\Models\v1\Basic\User;
 use Illuminate\Foundation\Testing\RefreshDatabase;
 use PHPUnit\Framework\Attributes\Test;
 use Symfony\Component\HttpFoundation\Response;
@@ -23,7 +23,6 @@ class UserRegisterTest extends TestCase
         ];
 
         $response = $this->postJson("$this->apiBaseUrl/users", $data);
-
         $response->assertStatus(Response::HTTP_OK);
 
         $userId = $response->json('data.user.id');
@@ -55,13 +54,14 @@ class UserRegisterTest extends TestCase
     #[Test]
     public function email_must_be_required(): void
     {
+
         $data = [
             'password' => 'password',
             'name' => 'Luis',
             'lastname' => 'Candelario',
         ];
 
-        $response = $this->postJson("$this->apiBaseUrl/users", $data);
+        $response = $this->postJson("$this->apiBaseUrl/users/", $data);
 
         $response->assertStatus(Response::HTTP_UNPROCESSABLE_ENTITY);
         $response->assertJsonStructure(['message', 'data', 'status', 'errors' => ['email']]);

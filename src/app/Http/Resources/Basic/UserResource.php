@@ -1,7 +1,8 @@
 <?php
 
-namespace App\Http\Resources;
+namespace App\Http\Resources\Basic;
 
+use App\Http\Resources\FieldsResourceTraits;
 use Illuminate\Http\Request;
 use Illuminate\Http\Resources\Json\JsonResource;
 
@@ -19,18 +20,16 @@ use Illuminate\Http\Resources\Json\JsonResource;
  */
 class UserResource extends JsonResource
 {
-    /**
-     * Transform the resource into an array.
-     *
-     * @return array<string, mixed>
-     */
+    use FieldsResourceTraits;
+
     public function toArray(Request $request): array
     {
+        $this->init($request);
         return [
-            'id' => $this->id,
-            'email' => $this->email,
-            'name' => $this->name,
-            'lastname' => $this->lastname,
+            'id' => $this->when($this->include('id'), $this->id),
+            'email' => $this->when($this->include('email'), $this->email),
+            'name' => $this->when($this->include('name'), $this->name),
+            'lastname' => $this->when($this->include('lastname'), $this->lastname),
         ];
     }
 }

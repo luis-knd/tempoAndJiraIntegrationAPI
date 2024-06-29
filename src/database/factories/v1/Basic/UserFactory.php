@@ -1,6 +1,6 @@
 <?php
 
-namespace Database\Factories\v1;
+namespace Database\Factories\v1\Basic;
 
 use Illuminate\Database\Eloquent\Factories\Factory;
 use Illuminate\Support\Facades\Hash;
@@ -12,7 +12,7 @@ use Illuminate\Support\Str;
  * @package   Database\Factories
  * @copyright 06-2024 Verifarma
  * @author    Luis Candelario <lcandelario@verifarma.com>
- * @extends \Illuminate\Database\Eloquent\Factories\Factory<\App\Models\v1\User>
+ * @extends \Illuminate\Database\Eloquent\Factories\Factory<\App\Models\v1\Basic\User>
  */
 class UserFactory extends Factory
 {

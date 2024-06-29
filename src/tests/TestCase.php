@@ -2,8 +2,9 @@
 
 namespace Tests;
 
-use App\Models\v1\User;
+use App\Models\v1\Basic\User;
 use Illuminate\Foundation\Testing\TestCase as BaseTestCase;
+use Illuminate\Testing\TestResponse;
 use Tymon\JWTAuth\Facades\JWTAuth;
 
 abstract class TestCase extends BaseTestCase
@@ -18,7 +19,7 @@ abstract class TestCase extends BaseTestCase
      * @param string $uri The URI to send the request to.
      * @param array $data The data to include in the request body. Default is an empty array.
      */
-    protected function apiAs(User $user, string $method, string $uri, array $data = [])
+    protected function apiAs(User $user, string $method, string $uri, array $data = []): TestResponse
     {
         $headers = [
             'Authorization' => 'Bearer ' . JWTAuth::fromUser($user)

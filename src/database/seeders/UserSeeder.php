@@ -2,7 +2,7 @@
 
 namespace Database\Seeders;
 
-use App\Models\v1\User;
+use App\Models\v1\Basic\User;
 use Illuminate\Database\Seeder;
 use Illuminate\Foundation\Testing\RefreshDatabase;
 
