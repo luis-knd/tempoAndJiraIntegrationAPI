@@ -21,7 +21,7 @@ Before you begin, ensure you have the following installed on your local machine:
 
 You have needed the next ports available:
 
-- 80 
+- 80
 - 3306
 - 9000
 - 6379
@@ -36,7 +36,7 @@ You have needed the next ports available:
 
 2. **In the main path, up the containers**
     ```bash
-    docker compose up --build -d 
+    docker compose up --build -d
     ```
 
 3. **Create Laravel Project**
@@ -53,7 +53,7 @@ You have needed the next ports available:
 ## Running the Project
 
 1. **Run our Laravel application**
- 
+
    Add to local hosts file the next line:
    ```apacheconf
    127.0.0.1 		tempo_and_jira_api

@@ -1,0 +1,40 @@
+repos:
+  - repo: https://github.com/pre-commit/pre-commit-hooks
+    rev: v4.4.0
+    hooks:
+      - id: trailing-whitespace
+      - id: check-merge-conflict
+      - id: check-json
+      - id: check-xml
+      - id: check-yaml
+        files: \.(yaml|yml)$
+
+  - repo: https://github.com/digitalpulp/pre-commit-php.git
+    rev: 1.4.0
+    hooks:
+      - id: php-lint
+
+  - repo: https://github.com/luis-knd/pre-commit
+    rev: v0.0.2
+    hooks:
+      - id: install-dependencies
+      - id: phpcs-subdir
+        args: [
+          'src',
+          '--report=code',
+          '--colors',
+          '--report-width=80',
+          '--standard=PSR12',
+          '--ignore= src/vendor, src/storage, src/bootstrap, src/resources, src/tests, src/public, src/config, src/app/Helpers/helpers, bin'
+        ]
+      - id: phpcbf-subdir
+        args: [
+          'src',
+          '--extensions=php',
+          '--standard=PSR12',
+          '--ignore= src/vendor, src/storage, src/bootstrap, src/resources, src/tests, src/public, src/config, src/app/Helpers/helpers, bin',
+          'src'
+        ]
+      - id: phpstan-subdir
+        args: ['src']
+        files: ^src/.*\.(php)$
