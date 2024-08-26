@@ -3,13 +3,12 @@
 namespace App\Http\Controllers\v1\Auth;
 
 use App\Http\Controllers\Controller;
-use App\Http\Resources\Basic\UserResource;
+use App\Http\Resources\v1\Basic\UserResource;
 use App\Models\v1\Basic\User;
 use App\Rules\Auth\CheckPasswordRule;
-use App\Services\Auth\AuthService;
+use App\Services\v1\Auth\AuthService;
 use Illuminate\Http\JsonResponse;
 use Illuminate\Http\Request;
-use Illuminate\Support\Facades\Password;
 use Symfony\Component\HttpFoundation\Response;
 
 /**

@@ -1,6 +1,6 @@
 <?php
 
-namespace App\Http\Resources\Basic;
+namespace App\Http\Resources\v1\Basic;
 
 use App\Http\Resources\FieldsResourceTraits;
 use App\Models\v1\Basic\User;

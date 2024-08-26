@@ -5,13 +5,13 @@ namespace App\Http\Controllers\v1\Basic;
 use App\Exceptions\UnprocessableException;
 use App\Http\Controllers\Controller;
 use App\Http\Requests\v1\Basic\UserRequest;
-use App\Http\Resources\Basic\UserCollection;
-use App\Http\Resources\Basic\UserResource;
+use App\Http\Resources\v1\Basic\UserCollection;
+use App\Http\Resources\v1\Basic\UserResource;
 use App\Models\v1\Basic\User;
-use App\Services\Basic\UserService;
-use Illuminate\Support\Facades\Gate;
+use App\Services\v1\Basic\UserService;
 use Illuminate\Http\JsonResponse;
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\Gate;
 use Symfony\Component\HttpFoundation\Response;
 
 /**

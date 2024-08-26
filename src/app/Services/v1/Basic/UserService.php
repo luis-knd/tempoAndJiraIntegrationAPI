@@ -1,10 +1,10 @@
 <?php
 
-namespace App\Services\Basic;
+namespace App\Services\v1\Basic;
 
 use App\Exceptions\UnprocessableException;
 use App\Models\v1\Basic\User;
-use App\Repository\Interfaces\Basic\UserRespositoryInterface;
+use App\Repository\Interfaces\v1\Basic\UserRepositoryInterface;
 use App\Services\ProcessParamsTraits;
 use Illuminate\Contracts\Pagination\LengthAwarePaginator;
 
@@ -19,7 +19,7 @@ class UserService
 {
     use ProcessParamsTraits;
 
-    public function __construct(readonly UserRespositoryInterface $userRepository)
+    public function __construct(readonly UserRepositoryInterface $userRepository)
     {
     }
 

@@ -1,8 +1,8 @@
 <?php
 
-namespace App\Services\Auth;
+namespace App\Services\v1\Auth;
 
-use App\Http\Resources\Basic\UserResource;
+use App\Http\Resources\v1\Basic\UserResource;
 use App\Models\v1\Basic\User;
 use App\Notifications\ResetPasswordNotification;
 use Illuminate\Http\JsonResponse;

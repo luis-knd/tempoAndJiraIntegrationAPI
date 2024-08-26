@@ -9,10 +9,10 @@ Route::prefix('v1')->as('v1:')->group(
 
 Route::any(
     '{version}/{any}',
-    function ($version, $any) {
+    static function ($version, $any) {
         //TODO: if you add any version, please add here too and check the HealthCheckApplicationTest.
         $availableVersions = ['v1'];
-        if (!in_array($version, $availableVersions)) {
+        if (!in_array($version, $availableVersions, true)) {
             return redirect("/api/" . max($availableVersions) . "/$any");
         }
         abort(404);
@@ -20,7 +20,7 @@ Route::any(
 )->where('any', '.*');
 
 Route::fallback(
-    function () {
+    static function () {
         return response()->json(['message' => 'Not Found'], 404);
     }
 );
