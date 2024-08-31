@@ -48,7 +48,7 @@ class JiraUserService
      *                      The keys should be the names of the JiraUser object's properties.
      * @return JiraUser The newly created JiraUser object.
      */
-    public function create(array $params): JiraUser
+    public function make(array $params): JiraUser
     {
         $jiraUser = new JiraUser();
         $this->setParams($params, $jiraUser);

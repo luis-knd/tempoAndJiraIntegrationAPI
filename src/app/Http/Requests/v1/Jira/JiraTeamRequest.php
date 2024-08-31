@@ -4,21 +4,27 @@ namespace App\Http\Requests\v1\Jira;
 
 use App\Http\Requests\BaseRequest;
 
-class JiraUserRequest extends BaseRequest
+/**
+ * Class JiraTeamRequest
+ *
+ * @package App\Http\Requests\v1\Jira
+ * @copyright 08-2024 Lcandesign
+ * @author Luis Candelario <lcandelario@lcandesign.com>
+ */
+class JiraTeamRequest extends BaseRequest
 {
     protected array $publicAttributes = [
         'id' => ['rules' => ['uuid']],
-        'jira_user_id' => ['rules' => ['required', 'string', 'unique:jira_users,jira_user_id']],
+        'jira_team_id' => ['rules' => ['required', 'uuid', 'unique:jira_teams,jira_team_id']],
         'name' => ['rules' => ['required', 'string', 'max:255']],
-        'email' => ['rules' => ['required', 'email', 'unique:jira_users,email']],
     ];
 
     protected array $relations = [
-        'jira_teams' => []
+        'jira_users' => []
     ];
 
     protected array $proxyFilters = [
-        'jira_team.name' => ['mediate' => 'jira_team_name'],
+        'jira_user.name' => ['mediate' => 'jira_user_name'],
     ];
 
     public function authorize(): bool
@@ -39,7 +45,7 @@ class JiraUserRequest extends BaseRequest
 
     private function rulesForGet(): array
     {
-        if (!$this->route('jira_user', false)) {
+        if (!$this->route('jira_team', false)) {
             return $this->getFilterRules();
         }
         return $this->showRules();
@@ -48,17 +54,15 @@ class JiraUserRequest extends BaseRequest
     private function rulesForPut(): array
     {
         return [
-            'name' => 'required|min:2|max:255',
-            'email' => 'required|email',
+            'name' => 'required|string|max:255',
         ];
     }
 
     private function rulesForPost(): array
     {
         return [
-            'jira_user_id' => 'required|string|unique:jira_users,jira_user_id',
-            'name' => 'required|min:2|max:255',
-            'email' => 'required|email|unique:jira_users,email',
+            'jira_team_id' => 'required|uuid|unique:jira_teams,jira_team_id',
+            'name' => 'required|string|max:255',
         ];
     }
 

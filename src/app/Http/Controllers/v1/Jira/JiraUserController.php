@@ -50,7 +50,7 @@ class JiraUserController extends Controller
     public function store(JiraUserRequest $request): JsonResponse
     {
         $validatedData = $request->validated();
-        $jiraUser = $this->jiraUserService->create($validatedData);
+        $jiraUser = $this->jiraUserService->make($validatedData);
         return JiraUserResource::toJsonResponse($jiraUser);
     }
 

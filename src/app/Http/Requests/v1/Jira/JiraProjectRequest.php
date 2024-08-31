@@ -4,21 +4,13 @@ namespace App\Http\Requests\v1\Jira;
 
 use App\Http\Requests\BaseRequest;
 
-class JiraUserRequest extends BaseRequest
+class JiraProjectRequest extends BaseRequest
 {
     protected array $publicAttributes = [
         'id' => ['rules' => ['uuid']],
-        'jira_user_id' => ['rules' => ['required', 'string', 'unique:jira_users,jira_user_id']],
-        'name' => ['rules' => ['required', 'string', 'max:255']],
-        'email' => ['rules' => ['required', 'email', 'unique:jira_users,email']],
-    ];
-
-    protected array $relations = [
-        'jira_teams' => []
-    ];
-
-    protected array $proxyFilters = [
-        'jira_team.name' => ['mediate' => 'jira_team_name'],
+        'jira_project_id' => ['rules' => ['required', 'string', 'unique:jira_projects,jira_project_id']],
+        'name' => ['rules' => ['required', 'string', 'unique:jira_projects,name']],
+        'description' => ['rules' => ['nullable', 'string']],
     ];
 
     public function authorize(): bool
@@ -39,7 +31,7 @@ class JiraUserRequest extends BaseRequest
 
     private function rulesForGet(): array
     {
-        if (!$this->route('jira_user', false)) {
+        if (!$this->route('jira_project', false)) {
             return $this->getFilterRules();
         }
         return $this->showRules();
@@ -48,17 +40,17 @@ class JiraUserRequest extends BaseRequest
     private function rulesForPut(): array
     {
         return [
-            'name' => 'required|min:2|max:255',
-            'email' => 'required|email',
+            'name' => 'required|string|unique:jira_projects,name|max:255',
+            'description' => 'nullable|string',
         ];
     }
 
     private function rulesForPost(): array
     {
         return [
-            'jira_user_id' => 'required|string|unique:jira_users,jira_user_id',
-            'name' => 'required|min:2|max:255',
-            'email' => 'required|email|unique:jira_users,email',
+            'jira_project_id' => 'required|string|unique:jira_projects,jira_project_id',
+            'name' => 'required|string|unique:jira_projects,name|max:255',
+            'description' => 'nullable|string',
         ];
     }
 

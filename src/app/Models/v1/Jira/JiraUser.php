@@ -5,6 +5,7 @@ namespace App\Models\v1\Jira;
 use Illuminate\Database\Eloquent\Concerns\HasUuids;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
+use Illuminate\Database\Eloquent\Relations\BelongsToMany;
 
 /**
  * Class JiraUser
@@ -23,16 +24,14 @@ class JiraUser extends Model
     use HasUuids;
 
     protected $table = 'jira_users';
-
     protected $fillable = [
         'jira_user_id',
         'name',
         'email',
     ];
 
-    public function jiraTeams()
+    public function jiraTeams(): BelongsToMany
     {
-        //TODO: JiraTeam aun no existe por lo que comento la relacion para poder pasar la validación de PhpStan
-        //return $this->belongsToMany(JiraTeam::class);
+        return $this->belongsToMany(JiraTeam::class);
     }
 }
