@@ -15,7 +15,9 @@ use Illuminate\Database\Eloquent\Model;
  *
  * @property mixed $jira_project_id
  * @property mixed $name
- * @property mixed $description
+ * @property mixed $jira_project_key
+ * @property mixed $jira_project_category_id
+ * @method static updateOrCreate(array $whereCondition, array $parameters)
  */
 class JiraProject extends Model
 {
@@ -26,6 +28,7 @@ class JiraProject extends Model
     protected $fillable = [
         'jira_project_id',
         'name',
-        'description',
+        'jira_project_key',
+        'jira_project_category_id'
     ];
 }

@@ -11,12 +11,15 @@ use Illuminate\Database\Eloquent\Relations\BelongsToMany;
  * Class JiraUser
  *
  * @package   App\Models\v1\Jira
- * @copyright 08-2024 Verifarma
- * @author    Luis Candelario <lcandelario@verifarma.com>
+ * @copyright 08-2024 Lcandesign
+ * @author    Luis Candelario <lcandelario@lcandesign.com>
  *
  * @property mixed $jira_user_id
  * @property mixed $name
  * @property mixed $email
+ * @property mixed $jira_user_type
+ * @property boolean $active
+ * @method static updateOrCreate(array $whereCondition, array $parameters)
  */
 class JiraUser extends Model
 {
@@ -28,6 +31,8 @@ class JiraUser extends Model
         'jira_user_id',
         'name',
         'email',
+        'jira_user_type',
+        'active'
     ];
 
     public function jiraTeams(): BelongsToMany

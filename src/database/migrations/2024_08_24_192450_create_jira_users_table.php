@@ -11,7 +11,9 @@ return new class extends Migration {
             $table->uuid('id')->primary();
             $table->string('jira_user_id')->unique();
             $table->string('name');
-            $table->string('email')->unique();
+            $table->string('email');
+            $table->string('jira_user_type');
+            $table->boolean('active');
             $table->timestamps();
         });
     }

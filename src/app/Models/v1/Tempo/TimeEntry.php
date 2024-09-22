@@ -3,6 +3,7 @@
 namespace App\Models\v1\Tempo;
 
 use App\Models\v1\Jira\JiraIssue;
+use App\Models\v1\Jira\JiraUser;
 use Illuminate\Database\Eloquent\Concerns\HasUuids;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
@@ -15,11 +16,14 @@ use Illuminate\Database\Eloquent\Relations\BelongsTo;
  * @copyright 08-2024 Lcandesign
  * @author    Luis Candelario <lcandelario@lcandesign.com>
  *
- * @property mixed $date
- * @property mixed $hours
+ * @property mixed $tempo_worklog_id
+ * @property mixed $jira_issue_id
+ * @property mixed $jira_user_id
+ * @property mixed $time_spent_in_minutes
  * @property mixed $description
- * @property mixed $issue_id
- * @property mixed $tempo_user_id
+ * @property mixed $entry_created_at
+ * @property mixed $entry_updated_at
+ * @method static updateOrCreate(array $whereCondition, array $parameters)
  */
 class TimeEntry extends Model
 {
@@ -28,30 +32,22 @@ class TimeEntry extends Model
 
     protected $table = 'time_entries';
     protected $fillable = [
-        'date',
-        'hours',
+        'tempo_worklog_id',
+        'jira_issue_id',
+        'jira_user_id',
+        'time_spent_in_minutes',
         'description',
-        'issue_id',
-        'tempo_user_id'
+        'entry_created_at',
+        'entry_updated_at'
     ];
 
-    /**
-     * Define a relationship with the Jira Issue model.
-     *
-     * @return BelongsTo
-     */
     public function issue(): BelongsTo
     {
         return $this->belongsTo(JiraIssue::class);
     }
 
-    /**
-     * Define a relationship with the TempoUser model.
-     *
-     * @return BelongsTo
-     */
-    public function tempoUser(): BelongsTo
+    public function jiraUser(): BelongsTo
     {
-        return $this->belongsTo(TempoUser::class);
+        return $this->belongsTo(JiraUser::class);
     }
 }

@@ -7,6 +7,7 @@ use App\Models\v1\Tempo\TimeEntry;
 use App\Repository\Interfaces\v1\Tempo\TimeEntryRepositoryInterface;
 use App\Services\ProcessParamsTraits;
 use Illuminate\Contracts\Pagination\LengthAwarePaginator;
+use JsonException;
 
 /**
  * Class TimeEntryService
@@ -29,6 +30,7 @@ class TimeEntryService
      * @param array $params
      * @return LengthAwarePaginator
      * @throws UnprocessableException
+     * @throws JsonException
      */
     public function index(array $params): LengthAwarePaginator
     {
@@ -57,11 +59,13 @@ class TimeEntryService
 
     private function setParams(array $params, TimeEntry $timeEntry): void
     {
-        $timeEntry->date = $params['date'];
-        $timeEntry->hours = $params['hours'];
+        $timeEntry->tempo_worklog_id = $params['tempo_worklog_id'];
+        $timeEntry->jira_issue_id = $params['jira_issue_id'];
+        $timeEntry->jira_user_id = $params['jira_user_id'];
+        $timeEntry->time_spent_in_minutes = $params['time_spent_in_minutes'];
         $timeEntry->description = $params['description'];
-        $timeEntry->issue_id = $params['issue_id'];
-        $timeEntry->tempo_user_id = $params['tempo_user_id'];
+        $timeEntry->entry_created_at = $params['entry_created_at'];
+        $timeEntry->entry_updated_at = $params['entry_updated_at'];
     }
 
     /**
@@ -71,6 +75,7 @@ class TimeEntryService
      * @param array     $params
      * @return TimeEntry
      * @throws UnprocessableException
+     * @throws JsonException
      */
     public function load(TimeEntry $timeEntry, array $params = []): TimeEntry
     {

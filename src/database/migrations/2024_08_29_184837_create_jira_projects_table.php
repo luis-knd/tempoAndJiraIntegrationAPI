@@ -7,12 +7,20 @@ use Illuminate\Support\Facades\Schema;
 return new class extends Migration {
     public function up(): void
     {
-        Schema::create('jira_projects', function (Blueprint $table) {
+        Schema::create('jira_projects', static function (Blueprint $table) {
             $table->uuid('id')->primary();
-            $table->string('jira_project_id')->unique();
-            $table->string('name')->unique();
-            $table->text('description')->nullable();
+            $table->unsignedInteger('jira_project_id')->unique();
+            $table->string('jira_project_key')->unique();
+            $table->string('name')->nullable(false);
+            $table->unsignedBigInteger('jira_project_category_id')->nullable();
+
+            $table->foreign('jira_project_category_id')
+                ->references('jira_category_id')
+                ->on('jira_project_categories')
+                ->onDelete('cascade');
+
             $table->timestamps();
+            $table->softDeletes();
         });
     }
 

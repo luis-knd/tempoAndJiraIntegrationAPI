@@ -7,6 +7,7 @@ use App\Models\v1\Basic\User;
 use App\Repository\Interfaces\v1\Basic\UserRepositoryInterface;
 use App\Services\ProcessParamsTraits;
 use Illuminate\Contracts\Pagination\LengthAwarePaginator;
+use JsonException;
 
 /**
  * Class UserService
@@ -29,7 +30,7 @@ class UserService
      * @param array $params
      * @return LengthAwarePaginator
      * @throws UnprocessableException
-     *
+     * @throws JsonException
      */
     public function index(array $params): LengthAwarePaginator
     {
@@ -78,7 +79,7 @@ class UserService
      * @param array $params An optional array of parameters to process and load additional data.
      * @return User The User object with additional data loaded.
      * @throws UnprocessableException
-     *
+     * @throws JsonException
      */
     public function load(User $user, array $params = []): User
     {

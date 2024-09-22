@@ -9,9 +9,10 @@ class JiraIssueRequest extends BaseRequest
     protected array $publicAttributes = [
         'id' => ['rules' => ['uuid']],
         'jira_issue_id' => ['rules' => ['required', 'string', 'unique:jira_issues,jira_issue_id']],
+        'jira_issue_key' => ['rules' => ['required', 'string', 'unique:jira_issues,jira_issue_key']],
+        'jira_project_id' => ['rules' => ['required', 'int', 'unique:jira_projects,jira_project_id']],
         'summary' => ['rules' => ['required', 'string', 'max:255']],
         'development_category' => ['rules' => ['required', 'string', 'max:255']],
-        'description' => ['rules' => ['nullable', 'string']],
         'status' => ['rules' => ['required', 'max:255']]
     ];
 
@@ -43,7 +44,6 @@ class JiraIssueRequest extends BaseRequest
     {
         return [
             'summary' => 'required|string|max:255',
-            'description' => 'nullable|string',
             'development_category' => 'nullable|string',
             'status' => 'required|string'
         ];
@@ -53,9 +53,10 @@ class JiraIssueRequest extends BaseRequest
     {
         return [
             'jira_issue_id' => 'required|string|unique:jira_issues,jira_issue_id',
+            'jira_issue_key' => 'required|string|unique:jira_issues,jira_issue_key',
+            'jira_project_id' => 'required|int|unique:jira_projects,jira_project_id',
             'summary' => 'required|string|max:255',
             'development_category' => 'nullable|string',
-            'description' => 'nullable|string',
             'status' => 'required|string'
         ];
     }

@@ -35,4 +35,15 @@ return [
         ],
     ],
 
+    'jira' => [
+        'base_uri' => env('JIRA_BASE_URI'),
+        'username' => env('JIRA_USERNAME'),
+        'api_token' => env('JIRA_API_TOKEN'),
+    ],
+
+    'tempo' => [
+        'base_uri' => env('TEMPO_BASE_URI'),
+        'api_token' => env('TEMPO_API_TOKEN'),
+    ],
+
 ];

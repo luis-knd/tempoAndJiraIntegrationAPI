@@ -12,6 +12,7 @@ utilizes SOLID design patterns, and is built with modularity and scalability in 
 - [Pre Commit Configuration](#pre-commit-configuration)
 - [Run Tests](#run-tests)
 - [Documentation](#documentation)
+- [Troubleshooting](#troubleshooting)
 
 
 ## Prerequisites
@@ -137,3 +138,40 @@ To validate the documentation, run the next command:
 docker-compose run --rm artisan scramble:analyze
 ```
 ![Documentation Example](resources/images/documentationExample.png)
+
+
+### Troubleshooting
+If you want to make a backup of your database, run the next commands:
+```bash
+mysqldump -ulcandelario -p --lock-tables=false tempo_and_jira > tempo_and_jira.sql
+```
+Where:
+- `lcandelario` is your username
+- `--lock-tables=false` is your options
+- `tempo_and_jira` is your database name
+- `tempo_and_jira.sql` is your output file name
+
+**If you have this error:**
+```text
+mysqldump: Error: 'Access denied; you need (at least one of) the PROCESS privilege(s) for this operation' when trying to dump tablespaces
+```
+
+Run the next commands inside the database container by default `tempo_and_jira_db`:
+```bash
+mysql -u root -proot_password
+GRANT RELOAD ON *.* TO 'lcandelario'@'%';
+GRANT PROCESS ON *.* TO 'lcandelario'@'%';
+FLUSH PRIVILEGES;
+SHOW GRANTS FOR 'lcandelario'@'%';
+```
+
+Run again the dump command to create the backup and copy it to your desktop:
+```bash
+mysqldump -ulcandelario -p --lock-tables=false tempo_and_jira > tempo_and_jira.sql
+```
+
+Run the next command outside the database container, to copy it to your desktop:
+```bash
+docker cp tempo_and_jira_db:/tempo_and_jira.sql /home/lcandelario/Desktop/tempo_and_jira.sql
+```
+---

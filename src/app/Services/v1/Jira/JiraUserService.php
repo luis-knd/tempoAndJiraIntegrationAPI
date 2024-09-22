@@ -7,6 +7,7 @@ use App\Models\v1\Jira\JiraUser;
 use App\Repository\Interfaces\v1\Jira\JiraUserRepositoryInterface;
 use App\Services\ProcessParamsTraits;
 use Illuminate\Contracts\Pagination\LengthAwarePaginator;
+use JsonException;
 
 /**
  * Class JiraUserService
@@ -29,6 +30,7 @@ class JiraUserService
      * @param array $params The parameters to filter and sort the list of JiraUsers.
      * @return LengthAwarePaginator The paginated list of JiraUser objects.
      * @throws UnprocessableException
+     * @throws JsonException
      */
     public function index(array $params): LengthAwarePaginator
     {
@@ -67,6 +69,8 @@ class JiraUserService
         $jiraUser->jira_user_id = $params['jira_user_id'];
         $jiraUser->name = $params['name'];
         $jiraUser->email = $params['email'];
+        $jiraUser->jira_user_type = $params['jira_user_type'];
+        $jiraUser->active = $params['active'];
     }
 
     /**
@@ -76,6 +80,7 @@ class JiraUserService
      * @param array    $params   An optional array of parameters to process and load additional data.
      * @return JiraUser The JiraUser object with additional data loaded.
      * @throws UnprocessableException
+     * @throws JsonException
      */
     public function load(JiraUser $jiraUser, array $params = []): JiraUser
     {

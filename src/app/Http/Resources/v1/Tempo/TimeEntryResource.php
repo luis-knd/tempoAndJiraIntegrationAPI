@@ -14,12 +14,13 @@ use Illuminate\Http\Resources\Json\JsonResource;
  * @copyright 08-2024 Lcandesign
  * @author    Luis Candelario <lcandelario@lcandesign.com>
  *
- * @property mixed $id
- * @property mixed $date
- * @property mixed $hours
+ * @property mixed $tempo_worklog_id
+ * @property mixed $jira_issue_id
+ * @property mixed $jira_user_id
+ * @property mixed $time_spent_in_minutes
  * @property mixed $description
- * @property mixed $issue_id
- * @property mixed $tempo_user_id
+ * @property mixed $entry_created_at
+ * @property mixed $entry_updated_at
  */
 class TimeEntryResource extends JsonResource
 {
@@ -33,12 +34,13 @@ class TimeEntryResource extends JsonResource
     public function toArray($request): array
     {
         return [
-            'id' => $this->id,
-            'date' => $this->date,
-            'hours' => $this->hours,
+            'tempo_worklog_id' => $this->tempo_worklog_id,
+            'jira_issue_id' => $this->jira_issue_id,
+            'jira_user_id' => $this->jira_user_id,
+            'time_spent_in_minutes' => $this->time_spent_in_minutes,
             'description' => $this->description,
-            'issue_id' => $this->issue_id,
-            'tempo_user_id' => $this->tempo_user_id,
+            'entry_created_at' => $this->entry_created_at,
+            'entry_updated_at' => $this->entry_updated_at
         ];
     }
 }

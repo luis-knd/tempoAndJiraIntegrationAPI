@@ -8,9 +8,14 @@ class JiraProjectRequest extends BaseRequest
 {
     protected array $publicAttributes = [
         'id' => ['rules' => ['uuid']],
-        'jira_project_id' => ['rules' => ['required', 'string', 'unique:jira_projects,jira_project_id']],
+        'jira_project_id' => ['rules' => ['required', 'int', 'unique:jira_projects,jira_project_id']],
+        'jira_project_key' => ['rules' => ['required', 'string', 'unique:jira_projects,jira_project_key']],
         'name' => ['rules' => ['required', 'string', 'unique:jira_projects,name']],
-        'description' => ['rules' => ['nullable', 'string']],
+        'jira_project_category_id' => ['rules' => [
+            'required',
+            'int',
+            'exists:jira_project_categories,jira_project_category_id'
+        ]],
     ];
 
     public function authorize(): bool
@@ -40,17 +45,19 @@ class JiraProjectRequest extends BaseRequest
     private function rulesForPut(): array
     {
         return [
+            'jira_project_key' => ['rules' => ['required', 'string', 'unique:jira_projects,jira_project_key']],
             'name' => 'required|string|unique:jira_projects,name|max:255',
-            'description' => 'nullable|string',
+            'jira_project_category_id' => 'required|int|unique:jira_project_categories,jira_project_category_id',
         ];
     }
 
     private function rulesForPost(): array
     {
         return [
-            'jira_project_id' => 'required|string|unique:jira_projects,jira_project_id',
+            'jira_project_id' => 'required|int|unique:jira_projects,jira_project_id',
+            'jira_project_key' => ['rules' => ['required', 'string', 'unique:jira_projects,jira_project_key']],
             'name' => 'required|string|unique:jira_projects,name|max:255',
-            'description' => 'nullable|string',
+            'jira_project_category_id' => 'required|int|unique:jira_project_categories,jira_project_category_id',
         ];
     }
 

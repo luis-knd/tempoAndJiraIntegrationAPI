@@ -14,22 +14,23 @@ use App\Http\Requests\BaseRequest;
 class TimeEntryRequest extends BaseRequest
 {
     protected array $publicAttributes = [
-        'id' => ['rules' => ['uuid']],
-        'date' => ['rules' => ['required', 'date']],
-        'hours' => ['rules' => ['required', 'numeric', 'min:0']],
-        'description' => ['rules' => ['required', 'string', 'max:255']],
-        'issue_id' => ['rules' => ['required', 'uuid', 'exists:issues,id']],
-        'tempo_user_id' => ['rules' => ['required', 'uuid', 'exists:tempo_users,id']],
+        'tempo_worklog_id' => ['rules' => ['required', 'integer', 'min:0']],
+        'jira_issue_id' => ['rules' => ['required', 'integer', 'min:0', 'exists:jira_issues,jira_issue_id']],
+        'jira_user_id' => ['rules' => ['required', 'string', 'exists:jira_users,jira_user_id']],
+        'time_spent_in_minutes' => ['rules' => ['required', 'integer', 'min:0']],
+        'description' => ['rules' => ['required', 'string']],
+        'entry_created_at' => ['rules' => ['required', 'date']],
+        'entry_updated_at' => ['rules' => ['required', 'date']],
     ];
 
     protected array $relations = [
         'jira_issues' => [],
-        'tempo_users' => [],
+        'jira_users' => [],
     ];
 
     protected array $proxyFilters = [
         'jira_issues.summary' => ['mediate' => 'jira_issues_summary'],
-        'tempo_users.name' => ['mediate' => 'tempo_users_name'],
+        'jira_users.name' => ['mediate' => 'jira_users_name'],
     ];
 
     public function authorize(): bool
@@ -41,9 +42,7 @@ class TimeEntryRequest extends BaseRequest
     {
         return match ($this->getMethod()) {
             'GET' => $this->rulesForGet(),
-            'PUT' => $this->rulesForPut(),
             'POST' => $this->rulesForPost(),
-            'DELETE' => $this->rulesForDelete(),
             default => [],
         };
     }
@@ -56,28 +55,16 @@ class TimeEntryRequest extends BaseRequest
         return $this->showRules();
     }
 
-    private function rulesForPut(): array
-    {
-        return [
-            'date' => 'required|date',
-            'hours' => 'required|numeric|min:0',
-            'description' => 'required|string|max:255',
-        ];
-    }
-
     private function rulesForPost(): array
     {
         return [
-            'date' => 'required|date',
-            'hours' => 'required|numeric|min:0',
-            'description' => 'required|string|max:255',
-            'issue_id' => 'required|uuid|exists:issues,id',
-            'tempo_user_id' => 'required|uuid|exists:tempo_users,id',
+            'tempo_worklog_id' => 'required|numeric|min:0',
+            'jira_issue_id' => 'required|numeric|min:0|exists:jira_issues,jira_issue_id',
+            'jira_user_id' => 'required|numeric|min:0|exists:jira_users,jira_user_id',
+            'time_spent_in_minutes' => 'required|numeric|min:0',
+            'description' => 'required|string',
+            'entry_created_at' => 'required|date',
+            'entry_updated_at' => 'required|date',
         ];
-    }
-
-    private function rulesForDelete(): array
-    {
-        return [];
     }
 }

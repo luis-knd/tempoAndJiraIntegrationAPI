@@ -11,6 +11,8 @@ class JiraUserRequest extends BaseRequest
         'jira_user_id' => ['rules' => ['required', 'string', 'unique:jira_users,jira_user_id']],
         'name' => ['rules' => ['required', 'string', 'max:255']],
         'email' => ['rules' => ['required', 'email', 'unique:jira_users,email']],
+        'jira_user_type' => ['rules' => ['required', 'string']],
+        'active' => ['rules' => ['required', 'boolean']],
     ];
 
     protected array $relations = [
@@ -30,7 +32,6 @@ class JiraUserRequest extends BaseRequest
     {
         return match ($this->getMethod()) {
             'GET' => $this->rulesForGet(),
-            'PUT' => $this->rulesForPut(),
             'POST' => $this->rulesForPost(),
             'DELETE' => $this->rulesForDelete(),
             default => [],
@@ -45,20 +46,14 @@ class JiraUserRequest extends BaseRequest
         return $this->showRules();
     }
 
-    private function rulesForPut(): array
-    {
-        return [
-            'name' => 'required|min:2|max:255',
-            'email' => 'required|email',
-        ];
-    }
-
     private function rulesForPost(): array
     {
         return [
             'jira_user_id' => 'required|string|unique:jira_users,jira_user_id',
             'name' => 'required|min:2|max:255',
             'email' => 'required|email|unique:jira_users,email',
+            'jira_user_type' => 'required|string',
+            'active' => 'required|boolean'
         ];
     }
 

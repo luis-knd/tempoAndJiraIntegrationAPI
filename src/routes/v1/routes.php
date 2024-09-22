@@ -4,10 +4,11 @@ use App\Http\Controllers\v1\Auth\AuthController;
 use App\Http\Controllers\v1\Basic\HealthCheckController;
 use App\Http\Controllers\v1\Basic\UserController;
 use App\Http\Controllers\v1\Jira\JiraIssueController;
+use App\Http\Controllers\v1\Jira\JiraProjectCategoryController;
 use App\Http\Controllers\v1\Jira\JiraProjectController;
+use App\Http\Controllers\v1\Jira\JiraSyncController;
 use App\Http\Controllers\v1\Jira\JiraTeamController;
 use App\Http\Controllers\v1\Jira\JiraUserController;
-use App\Http\Controllers\v1\Tempo\TempoUserController;
 use App\Http\Controllers\v1\Tempo\TimeEntryController;
 use Illuminate\Support\Facades\Route;
 
@@ -29,10 +30,12 @@ Route::middleware('auth:api')->group(function () {
         Route::apiResource('teams', JiraTeamController::class);
         Route::apiResource('issues', JiraIssueController::class);
         Route::apiResource('projects', JiraProjectController::class);
+        Route::apiResource('project-categories', JiraProjectCategoryController::class);
+        Route::post('sync-all', [JiraSyncController::class, 'syncAll']);
+        Route::post('sync-issues', [JiraSyncController::class, 'syncIssues']);
     });
 
     Route::group(['prefix' => 'tempo'], static function () {
-        Route::apiResource('users', TempoUserController::class);
         Route::apiResource('time-entries', TimeEntryController::class);
     });
 });

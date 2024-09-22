@@ -7,6 +7,7 @@ use App\Models\v1\Jira\JiraIssue;
 use App\Repository\Interfaces\v1\Jira\JiraIssueRepositoryInterface;
 use App\Services\ProcessParamsTraits;
 use Illuminate\Contracts\Pagination\LengthAwarePaginator;
+use JsonException;
 
 /**
  * Class JiraIssueService
@@ -52,19 +53,21 @@ class JiraIssueService
     private function setParams(array $params, JiraIssue $jiraIssue): void
     {
         $jiraIssue->jira_issue_id = $params['jira_issue_id'];
+        $jiraIssue->jira_issue_key = $params['jira_issue_key'];
+        $jiraIssue->jira_project_id = $params['jira_project_id'];
         $jiraIssue->summary = $params['summary'];
         $jiraIssue->development_category = $params['development_category'];
-        $jiraIssue->description = $params['description'];
         $jiraIssue->status = $params['status'];
     }
 
     /**
-     *  load
+     * load
      *
      * @param JiraIssue $jiraIssue
-     * @param array                         $params
+     * @param array     $params
      * @return JiraIssue
      * @throws UnprocessableException
+     * @throws JsonException
      */
     public function load(JiraIssue $jiraIssue, array $params = []): JiraIssue
     {

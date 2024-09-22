@@ -53,7 +53,8 @@ class JiraProjectService
     {
         $jiraProject->jira_project_id = $params['jira_project_id'];
         $jiraProject->name = $params['name'];
-        $jiraProject->description = $params['description'];
+        $jiraProject->jira_project_key = $params['jira_project_key'];
+        $jiraProject->jira_project_category_id = $params['jira_project_category_id'];
     }
 
     /**

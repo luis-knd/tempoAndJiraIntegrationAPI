@@ -12,6 +12,7 @@ use App\Services\v1\Basic\UserService;
 use Illuminate\Http\JsonResponse;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Gate;
+use JsonException;
 use Symfony\Component\HttpFoundation\Response;
 
 /**
@@ -44,6 +45,7 @@ class UserController extends Controller
      *                             collection response format.
      * @throws UnprocessableException If the request cannot be processed due to validation errors
      *                             or other semantic issues.
+     * @throws JsonException
      *
      * @response array{
      *     "data": array{
@@ -120,6 +122,7 @@ class UserController extends Controller
      * @param User        $user    The user entity instance to be displayed.
      * @return JsonResponse A JSON response containing the detailed information of the specified user.
      * @throws UnprocessableException
+     * @throws JsonException
      *
      * @response array{
      *      "data": array{

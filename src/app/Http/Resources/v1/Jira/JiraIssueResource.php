@@ -17,6 +17,8 @@ use Illuminate\Http\Resources\Json\JsonResource;
  *
  * @property mixed $id
  * @property mixed $jira_issue_id
+ * @property mixed $jira_issue_key
+ * @property mixed $jira_project_id
  * @property mixed $summary
  * @property mixed $development_category
  * @property mixed $description
@@ -37,9 +39,10 @@ class JiraIssueResource extends JsonResource
         return [
             'id' => $this->when($this->include('id'), $this->id),
             'jira_issue_id' => $this->when($this->include('jira_issue_id'), $this->jira_issue_id),
+            'jira_issue_key' => $this->when($this->include('jira_issue_key'), $this->jira_issue_key),
+            'jira_project_id' => $this->when($this->include('jira_project_id'), $this->jira_project_id),
             'summary' => $this->when($this->include('summary'), $this->summary),
             'development_category' => $this->when($this->include('development_category'), $this->development_category),
-            'description' => $this->when($this->include('description'), $this->description),
             'status' => $this->when($this->include('status'), $this->status)
         ];
     }
