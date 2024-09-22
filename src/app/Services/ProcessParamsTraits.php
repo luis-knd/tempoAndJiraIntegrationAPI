@@ -4,6 +4,7 @@ namespace App\Services;
 
 use App\Exceptions\UnprocessableException;
 use DateTime;
+use JsonException;
 
 /**
  * Trait ProcessParamsTraits
@@ -20,6 +21,7 @@ trait ProcessParamsTraits
      * @param array $params The parameters to process.
      * @return array The processed values.
      * @throws UnprocessableException If the parameters cannot be processed.
+     * @throws JsonException
      */
     protected function process(array $params): array
     {
@@ -121,11 +123,11 @@ trait ProcessParamsTraits
     {
         $page = ['number' => 1, 'size' => 30];
 
-        if (key_exists('page_size', $params)) {
+        if (array_key_exists('page_size', $params)) {
             $page['size'] = $params['page_size'];
             unset($params['page_size']);
         }
-        if (key_exists('page', $params)) {
+        if (array_key_exists('page', $params)) {
             $page['number'] = $params['page'];
             unset($params['page']);
         }
@@ -139,6 +141,7 @@ trait ProcessParamsTraits
      * @param array $params The parameters to produce the filter from.
      * @return array The filter array.
      * @throws UnprocessableException If a criteria is not acceptable.
+     * @throws JsonException
      */
     protected function produceFilter(array $params): array
     {
@@ -147,7 +150,7 @@ trait ProcessParamsTraits
         foreach ($params as $field => $value) {
             if (is_array($value)) {
                 foreach ($value as $criteria => $val) {
-                    if (!key_exists($criteria, Criteria::MAP)) {
+                    if (!array_key_exists($criteria, Criteria::MAP)) {
                         throw new UnprocessableException(
                             __(":criteria is not an acceptable query criteria", ['criteria' => $criteria])
                         );
@@ -170,6 +173,7 @@ trait ProcessParamsTraits
      * @param string $field    The field to be used in the filter.
      * @param string $operator The operator to be used in the filter. Default is '='.
      * @return array The filter array containing the field, operator, and normalized values.
+     * @throws JsonException
      */
     private function makeFilter(string $input, string $field, string $operator = '='): array
     {
@@ -177,7 +181,7 @@ trait ProcessParamsTraits
         $numericValues = array_filter($values, 'is_numeric');
 
         if (count($values) === count($numericValues) && !in_array($field, ['code', 'name'])) {
-            $values = json_decode('[' . implode(',', $numericValues) . ']');
+            $values = json_decode('[' . implode(',', $numericValues) . ']', false, 512, JSON_THROW_ON_ERROR);
         }
 
         $normalizedValues = array_map([$this, 'normalise'], $values);

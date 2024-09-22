@@ -11,3 +11,5 @@ parameters:
             message: '#Static call to instance method App\\Models\\v1\\[a-zA-Z0-9\\_]+::[a-zA-Z0-9]+\(\)#'
         -
             message: '#Call to an undefined method Illuminate\\Contracts\\Auth\\Authenticatable::[a-zA-Z0-9]+\(\)#'
+        -
+            message: '#Call to an undefined static method App\\Models\\v1\\[a-zA-Z0-9\\_]+::[a-zA-Z0-9]+\(\)#'

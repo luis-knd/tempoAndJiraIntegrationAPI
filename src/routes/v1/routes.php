@@ -3,11 +3,18 @@
 use App\Http\Controllers\v1\Auth\AuthController;
 use App\Http\Controllers\v1\Basic\HealthCheckController;
 use App\Http\Controllers\v1\Basic\UserController;
+use App\Http\Controllers\v1\Jira\JiraIssueController;
+use App\Http\Controllers\v1\Jira\JiraProjectCategoryController;
+use App\Http\Controllers\v1\Jira\JiraProjectController;
+use App\Http\Controllers\v1\Jira\JiraSyncController;
+use App\Http\Controllers\v1\Jira\JiraTeamController;
+use App\Http\Controllers\v1\Jira\JiraUserController;
+use App\Http\Controllers\v1\Tempo\TimeEntryController;
 use Illuminate\Support\Facades\Route;
 
 Route::get('/health', [HealthCheckController::class, 'health']);
 
-Route::group(['prefix' => 'auth'], function () {
+Route::group(['prefix' => 'auth'], static function () {
     Route::post('/login', [AuthController::class, 'login']);
     Route::post('/register', [AuthController::class, 'register']);
     Route::post('/reset-password', [AuthController::class, 'sendPassword']);
@@ -17,4 +24,18 @@ Route::group(['prefix' => 'auth'], function () {
 
 Route::middleware('auth:api')->group(function () {
     Route::apiResource('users', UserController::class);
+
+    Route::group(['prefix' => 'jira'], static function () {
+        Route::apiResource('users', JiraUserController::class);
+        Route::apiResource('teams', JiraTeamController::class);
+        Route::apiResource('issues', JiraIssueController::class);
+        Route::apiResource('projects', JiraProjectController::class);
+        Route::apiResource('project-categories', JiraProjectCategoryController::class);
+        Route::post('sync-all', [JiraSyncController::class, 'syncAll']);
+        Route::post('sync-issues', [JiraSyncController::class, 'syncIssues']);
+    });
+
+    Route::group(['prefix' => 'tempo'], static function () {
+        Route::apiResource('time-entries', TimeEntryController::class);
+    });
 });
