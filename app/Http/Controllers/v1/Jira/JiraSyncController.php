@@ -46,7 +46,7 @@ class JiraSyncController extends Controller
         FetchJiraProjectsJob::dispatch();
         FetchJiraUsersJob::dispatch();
         $this->syncJiraIssues($request);
-        return response()->json(['message' => 'Jira sync started']);
+        return response()->json(['message' => 'Jira categories, projects, users, issues and worklogs sync started']);
     }
 
     /**
@@ -71,7 +71,7 @@ class JiraSyncController extends Controller
     public function syncIssues(JiraSyncRequest $request): JsonResponse
     {
         $this->syncJiraIssues($request);
-        return response()->json(['message' => 'Jira sync issues started']);
+        return response()->json(['message' => 'Jira issues sync started']);
     }
 
     /**
@@ -98,6 +98,6 @@ class JiraSyncController extends Controller
     {
         $parameters = $request->validated();
         $syncId = Str::uuid()->toString();
-        FetchJiraIssuesJob::dispatch($parameters['jql'] ?? 'created >= startOfMonth()', $syncId);
+        FetchJiraIssuesJob::dispatch($parameters['jql'], $syncId);
     }
 }

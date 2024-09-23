@@ -20,24 +20,24 @@ repos:
       - id: install-dependencies
       - id: phpcbf-subdir
         args: [
-          'src',
+          'app/..',
           '--extensions=php',
           '--standard=PSR12',
-          '--ignore= src/vendor, src/storage, src/bootstrap, src/resources, src/tests, src/public, src/config, src/app/Helpers/helpers, bin',
-          'src'
+          '--ignore= vendor, storage, bootstrap, resources, tests, public, config, app/Helpers/helpers, bin',
+          'app/..'
         ]
       - id: phpcs-subdir
         args: [
-          'src',
+          'app/..',
           '--report=code',
           '--colors',
           '--report-width=80',
           '--standard=PSR12',
-          '--ignore= src/vendor, src/storage, src/bootstrap, src/resources, src/tests, src/public, src/config, src/app/Helpers/helpers, bin'
+          '--ignore= vendor, storage, bootstrap, resources, tests, public, config, app/Helpers/helpers, bin'
         ]
       - id: phpstan-subdir
-        args: ['src']
-        files: ^src/.*\.(php)$
+        args: ['app/..']
+        files: ^.*\.(php)$
 
   - repo: local
     hooks:
@@ -54,6 +54,6 @@ repos:
                      exit 0;
                    fi'
         language: system
-        files: ^src/tests/.*\.(php)$
+        files: ^tests/.*\.(php)$
         pass_filenames: false
 
