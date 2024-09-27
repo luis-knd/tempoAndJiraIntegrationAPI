@@ -20,9 +20,10 @@ class JiraProjectFactory extends Factory
 
     public function definition(): array
     {
+        $jiraProjectKey = $this->faker->unique()->countryISOAlpha3 . $this->faker->unique()->randomNumber(2, true);
         return [
             'jira_project_id' => self::$jiraProjectId++,
-            'jira_project_key' => $this->faker->unique()->countryISOAlpha3,
+            'jira_project_key' => $jiraProjectKey,
             'name' => $this->faker->word,
             //@phpstan-ignore-next-line
             'jira_project_category_id' => JiraProjectCategory::factory()->create()->jira_category_id

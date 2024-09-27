@@ -25,11 +25,12 @@ class JiraIssueService
     }
 
     /**
-     *  index
+     * index
      *
      * @param array $params
      * @return LengthAwarePaginator
      * @throws UnprocessableException
+     * @throws JsonException
      */
     public function index(array $params): LengthAwarePaginator
     {

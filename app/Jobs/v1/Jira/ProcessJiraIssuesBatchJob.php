@@ -88,4 +88,14 @@ class ProcessJiraIssuesBatchJob implements ShouldQueue
     {
         return ['jira-sync', 'sync-id:' . $this->syncId, 'issue-batch'];
     }
+
+    public function getSyncId(): string
+    {
+        return $this->syncId;
+    }
+
+    public function getIssuesBatch(): array
+    {
+        return $this->issuesBatch;
+    }
 }

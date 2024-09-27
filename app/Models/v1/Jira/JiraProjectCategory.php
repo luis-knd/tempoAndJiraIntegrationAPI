@@ -18,9 +18,11 @@ use Illuminate\Database\Eloquent\SoftDeletes;
  * @property mixed $id
  * @property mixed $name
  * @property mixed $description
- * @property mixed $jira_project_category_id
+ * @property mixed $jira_category_id
  * @method static inRandomOrder()
  * @method static updateOrCreate(array $whereCondition, array $parameters)
+ * @method static where(string $string, $jira_project_id)
+ * @method static first()
  */
 class JiraProjectCategory extends Model
 {

@@ -27,7 +27,7 @@ trait FieldsResourceTraits
      */
     protected function init(Request $request = null): void
     {
-        if (!$request || $this->level > 1 || $request->isMethod('get')) {
+        if (!$request || $this->level > 1 || !$request->isMethod('get')) {
             return;
         }
 
@@ -52,15 +52,12 @@ trait FieldsResourceTraits
      */
     private function findMaxLevel(string $relations): void
     {
-        $relatedResources = explode(',', $relations);
-
-        if (!empty($relatedResources)) {
+        $fields = explode(",", $relations);
+        if (count($fields) > 0) {
             $this->maxLevel = 2;
         }
-
-        foreach ($relatedResources as $resource) {
-            $levels = substr_count($resource, '.') + 2;
-
+        foreach ($fields as $field) {
+            $levels = substr_count($field, ".") + 2;
             if ($levels > $this->maxLevel) {
                 $this->maxLevel = $levels;
             }
@@ -75,7 +72,7 @@ trait FieldsResourceTraits
         if ($this->fields[0] === "*") {
             return true;
         }
-        return in_array($attribute, $this->fields);
+        return in_array($attribute, $this->fields, true);
     }
 
     public function setLevel($level): static
@@ -95,9 +92,9 @@ trait FieldsResourceTraits
         return $this;
     }
 
-    public function setPossibleTransitions(bool $possible_transitions): static
+    public function setPossibleTransitions(bool $possibleTransitions): static
     {
-        $this->possibleTransitions = $possible_transitions;
+        $this->possibleTransitions = $possibleTransitions;
         return $this;
     }
 }

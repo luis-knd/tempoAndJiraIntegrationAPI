@@ -47,7 +47,7 @@ class JiraProjectCategoryService
     {
         $jiraProjectCategory->name = $params['name'];
         $jiraProjectCategory->description = $params['description'];
-        $jiraProjectCategory->jira_project_category_id = $params['jira_project_category_id'];
+        $jiraProjectCategory->jira_category_id = $params['jira_category_id'];
     }
 
     /**

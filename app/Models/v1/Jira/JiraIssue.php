@@ -5,6 +5,7 @@ namespace App\Models\v1\Jira;
 use Illuminate\Database\Eloquent\Concerns\HasUuids;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
+use Illuminate\Database\Eloquent\Relations\BelongsTo;
 
 /**
  * Class JiraIssue
@@ -38,12 +39,8 @@ class JiraIssue extends Model
         'status'
     ];
 
-    protected $relations = [
-        'jira_project' => []
-    ];
-
-    public function jiraProject()
+    public function jiraProjects()
     {
-        return $this->belongsTo(JiraProject::class, 'jira_project_id');
+        return $this->belongsTo(JiraProject::class);
     }
 }

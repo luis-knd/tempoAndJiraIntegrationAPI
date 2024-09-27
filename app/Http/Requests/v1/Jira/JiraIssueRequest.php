@@ -10,10 +10,18 @@ class JiraIssueRequest extends BaseRequest
         'id' => ['rules' => ['uuid']],
         'jira_issue_id' => ['rules' => ['required', 'string', 'unique:jira_issues,jira_issue_id']],
         'jira_issue_key' => ['rules' => ['required', 'string', 'unique:jira_issues,jira_issue_key']],
-        'jira_project_id' => ['rules' => ['required', 'int', 'unique:jira_projects,jira_project_id']],
+        'project' => ['rules' => ['required', 'int', 'unique:jira_projects,jira_project_id']],
         'summary' => ['rules' => ['required', 'string', 'max:255']],
         'development_category' => ['rules' => ['required', 'string', 'max:255']],
         'status' => ['rules' => ['required', 'max:255']]
+    ];
+
+    protected array $relations = [
+        'jira_projects' => []
+    ];
+
+    protected array $proxyFilters = [
+        'jira_projects.jira_project_id' => ['mediate' => 'jira_projects_jira_project_id']
     ];
 
     public function authorize(): bool

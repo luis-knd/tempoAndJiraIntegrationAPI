@@ -25,7 +25,7 @@ abstract class BaseRequest extends FormRequest
      * Retrieves and processes the validated parameters.
      *
      * This function retrieves the validated parameters using the parent class's `validated` method.
-     * It then iterates over the `proxy_filters` array to check if there are any proxy filters
+     * It then iterates over the `proxyFilters` array to check if there are any proxy filters
      * that need to be mediated. If a proxy filter exists and its mediated parameter is present
      * in the validated parameters, the value of the mediated parameter is assigned to the proxy
      * filter's key and the mediated parameter is unset.
@@ -48,7 +48,7 @@ abstract class BaseRequest extends FormRequest
         $validatedParams = parent::validated();
 
         foreach ($this->proxyFilters as $filterKey => $filter) {
-            if (isset($filter['mediate']) && isset($validatedParams[$filter['mediate']])) {
+            if (isset($filter['mediate'], $validatedParams[$filter['mediate']])) {
                 $validatedParams[$filterKey] = $validatedParams[$filter['mediate']];
                 unset($validatedParams[$filter['mediate']]);
             }

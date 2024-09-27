@@ -5,6 +5,7 @@ namespace App\Models\v1\Jira;
 use Illuminate\Database\Eloquent\Concerns\HasUuids;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
+use Illuminate\Database\Eloquent\Relations\HasMany;
 
 /**
  * Class JiraProject
@@ -18,6 +19,8 @@ use Illuminate\Database\Eloquent\Model;
  * @property mixed $jira_project_key
  * @property mixed $jira_project_category_id
  * @method static updateOrCreate(array $whereCondition, array $parameters)
+ * @method static where(string $string, mixed $jira_project_id)
+ * @method static first()
  */
 class JiraProject extends Model
 {
@@ -31,4 +34,14 @@ class JiraProject extends Model
         'jira_project_key',
         'jira_project_category_id'
     ];
+
+    public function jiraIssues(): HasMany
+    {
+        return $this->hasMany(JiraIssue::class);
+    }
+
+    public function jiraProjectCategory()
+    {
+        return $this->belongsTo(JiraProjectCategory::class);
+    }
 }

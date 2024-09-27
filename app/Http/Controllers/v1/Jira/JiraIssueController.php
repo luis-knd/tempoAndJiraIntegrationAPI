@@ -39,7 +39,7 @@ class JiraIssueController extends Controller
      * @return JsonResponse A JSON response containing the paginated list of Jira issues.
      *
      * @throws UnprocessableException If the request contains invalid data, this exception is thrown.
-     *
+     * @throws JsonException If the response cannot be properly encoded to JSON.
      * @response array{
      *   "data": array{
      *      "key" : array{
@@ -64,7 +64,6 @@ class JiraIssueController extends Controller
     {
         $params = $request->validated();
         $paginator = $this->jiraIssueService->index($params);
-
         $jiraIssues = new JiraIssueCollection($paginator);
         return jsonResponse(data: $jiraIssues);
     }

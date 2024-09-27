@@ -1,6 +1,6 @@
 <?php
 
-namespace Tests\Feature\v1\Jira;
+namespace Feature\v1\Jira\Jobs;
 
 use App\Jobs\v1\Jira\FetchJiraProjectsJob;
 use App\Models\v1\Jira\JiraProjectCategory;

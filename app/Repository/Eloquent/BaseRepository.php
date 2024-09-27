@@ -74,7 +74,7 @@ abstract class BaseRepository implements RepositoryInterface
         $query = $this->model->newQuery();
         $query = $this->proxyFilters($params, $query);
         foreach ($params as $param) {
-            if (!in_array(count($param), [2, 3])) {
+            if (!in_array(count($param), [2, 3], true)) {
                 throw new BadRequestException(
                     __('each param have to had key and value or key, option and value')
                 );

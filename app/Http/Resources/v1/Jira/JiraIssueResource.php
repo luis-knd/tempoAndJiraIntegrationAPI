@@ -4,6 +4,8 @@ namespace App\Http\Resources\v1\Jira;
 
 use App\Http\Resources\FieldsResourceTraits;
 use App\Models\v1\Jira\JiraIssue;
+use App\Models\v1\Jira\JiraProject;
+use App\Services\v1\Jira\JiraProjectService;
 use Illuminate\Http\JsonResponse;
 use Illuminate\Http\Request;
 use Illuminate\Http\Resources\Json\JsonResource;
@@ -23,6 +25,8 @@ use Illuminate\Http\Resources\Json\JsonResource;
  * @property mixed $development_category
  * @property mixed $description
  * @property mixed $status
+ * @property mixed $jiraProjects
+ * @method relationLoaded(string $model)
  */
 class JiraIssueResource extends JsonResource
 {
@@ -36,11 +40,24 @@ class JiraIssueResource extends JsonResource
     public function toArray(Request $request): array
     {
         $this->init($request);
+        $jiraProject = $this->when(
+            $this->relationLoaded('jiraProjects') && $this->depthLevel(),
+            function () {
+                return JiraProjectResource::make(
+                    JiraProject::where('jira_project_id', $this->jira_project_id)->first()->load('jiraProjectCategory') // @phpstan-ignore-line
+                )
+                    ->setLevel($this->level)
+                    ->setMaxLevel($this->maxLevel)
+                    ->setPossibleTransitions(false);
+            },
+            [
+                'jira_project_id' => $this->jira_project_id
+            ]
+        );
         return [
-            'id' => $this->when($this->include('id'), $this->id),
             'jira_issue_id' => $this->when($this->include('jira_issue_id'), $this->jira_issue_id),
             'jira_issue_key' => $this->when($this->include('jira_issue_key'), $this->jira_issue_key),
-            'jira_project_id' => $this->when($this->include('jira_project_id'), $this->jira_project_id),
+            'project' => $jiraProject,
             'summary' => $this->when($this->include('summary'), $this->summary),
             'development_category' => $this->when($this->include('development_category'), $this->development_category),
             'status' => $this->when($this->include('status'), $this->status)

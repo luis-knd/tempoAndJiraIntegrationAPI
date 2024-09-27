@@ -15,13 +15,13 @@ use Illuminate\Http\Resources\Json\JsonResource;
  * @author    Luis Candelario <lcandelario@lcandesign.com>
  *
  * @property mixed $id
- * @property mixed $jira_category_id
  * @property mixed $name
  * @property mixed $description
  * @property mixed $created_at
  * @property mixed $updated_at
  * @property mixed $projects
- * @property mixed $max_level
+ * @property mixed $maxLevel
+ * @property mixed $jira_category_id
  * @method relationLoaded(string $string)
  */
 class JiraProjectCategoryResource extends JsonResource
@@ -37,17 +37,10 @@ class JiraProjectCategoryResource extends JsonResource
     public function toArray($request): array
     {
         $this->init($request);
-
         return [
-            'id' => $this->when($this->include('id'), $this->id),
-            'jira_category_id' => $this->when(
-                $this->include('jira_category_id'),
-                $this->jira_category_id
-            ),
+            'jira_category_id' => $this->when($this->include('jira_category_id'), $this->jira_category_id),
             'name' => $this->when($this->include('name'), $this->name),
-            'description' => $this->when($this->include('description'), $this->description),
-            'created_at' => $this->when($this->include('created_at'), $this->created_at),
-            'updated_at' => $this->when($this->include('updated_at'), $this->updated_at),
+            'description' => $this->when($this->include('description'), $this->description)
         ];
     }
 }

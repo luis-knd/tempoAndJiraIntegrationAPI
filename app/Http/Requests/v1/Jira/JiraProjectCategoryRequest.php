@@ -10,6 +10,7 @@ class JiraProjectCategoryRequest extends BaseRequest
         'id' => ['rules' => ['uuid']],
         'name' => ['rules' => ['string', 'max:255']],
         'description' => ['rules' => ['string']],
+        'jira_category_id' => ['rules' => ['required', 'unique:jira_project_categories,jira_category_id']]
     ];
 
     protected array $relations = [

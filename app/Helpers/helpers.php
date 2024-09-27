@@ -22,11 +22,10 @@ use Symfony\Component\HttpFoundation\Response;
  *
  */
 function jsonResponse(
-    mixed  $data = [],
-    int    $status = Response::HTTP_OK,
+    mixed $data = [],
+    int $status = Response::HTTP_OK,
     string $message = 'OK',
-    array  $errors = []
-): JsonResponse
-{
+    array $errors = []
+): JsonResponse {
     return response()->json(compact('data', 'status', 'message', 'errors'), $status);
 }
