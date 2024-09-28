@@ -91,6 +91,7 @@ class JiraIssueController extends Controller
     public function store(JiraIssueRequest $request): JsonResponse
     {
         $validatedData = $request->validated();
+        Gate::authorize('create', JiraIssue::class);
         $jiraIssue = $this->jiraIssueService->make($validatedData);
         return JiraIssueResource::toJsonResponse($jiraIssue);
     }
@@ -104,7 +105,7 @@ class JiraIssueController extends Controller
      *
      * @param JiraIssueRequest $request   The validated HTTP request containing any additional parameters for loading
      *                                    the issue.
-     * @param JiraIssue        $jiraIssue The Jira issue to be displayed.
+     * @param JiraIssue        $issue The Jira issue to be displayed.
      *
      * @return JsonResponse A JSON response containing the details of the Jira issue.
      *
@@ -121,11 +122,11 @@ class JiraIssueController extends Controller
      * @throws UnprocessableException If there is an issue with the request validation.
      * @throws JsonException If the response cannot be properly encoded to JSON.
      */
-    public function show(JiraIssueRequest $request, JiraIssue $jiraIssue): JsonResponse
+    public function show(JiraIssueRequest $request, JiraIssue $issue): JsonResponse
     {
         $params = $request->validated();
-        Gate::authorize('view', $jiraIssue);
-        $issue = $this->jiraIssueService->load($jiraIssue, $params);
+        Gate::authorize('view', $issue);
+        $issue = $this->jiraIssueService->load($issue, $params);
         return JiraIssueResource::toJsonResponse($issue);
     }
 

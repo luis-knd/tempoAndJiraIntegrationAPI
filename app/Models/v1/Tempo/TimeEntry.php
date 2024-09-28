@@ -24,6 +24,8 @@ use Illuminate\Database\Eloquent\Relations\BelongsTo;
  * @property mixed $entry_created_at
  * @property mixed $entry_updated_at
  * @method static updateOrCreate(array $whereCondition, array $parameters)
+ * @method static where(string $columnName, mixed $value)
+ * @method static first()
  */
 class TimeEntry extends Model
 {

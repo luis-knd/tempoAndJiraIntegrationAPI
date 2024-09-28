@@ -20,6 +20,7 @@ use Illuminate\Http\Resources\Json\JsonResource;
  * @property mixed $jira_project_id
  * @property mixed $name
  * @property mixed $jira_project_category_id
+ * @property mixed $jiraProjectCategory
  * @method relationLoaded(string $string)
  */
 class JiraProjectResource extends JsonResource
@@ -40,10 +41,7 @@ class JiraProjectResource extends JsonResource
             'category' => $this->when(
                 $this->relationLoaded('jiraProjectCategory') && $this->depthLevel(),
                 function () {
-                    return JiraProjectCategoryResource::make(
-                        // @phpstan-ignore-next-line
-                        JiraProjectCategory::where('jira_category_id', $this->jira_project_category_id)->first()
-                    )
+                    return JiraProjectCategoryResource::make($this->jiraProjectCategory)
                         ->setLevel($this->level + 1)
                         ->setMaxLevel($this->maxLevel)
                         ->setPossibleTransitions(false);

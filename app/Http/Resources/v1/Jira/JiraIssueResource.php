@@ -4,8 +4,6 @@ namespace App\Http\Resources\v1\Jira;
 
 use App\Http\Resources\FieldsResourceTraits;
 use App\Models\v1\Jira\JiraIssue;
-use App\Models\v1\Jira\JiraProject;
-use App\Services\v1\Jira\JiraProjectService;
 use Illuminate\Http\JsonResponse;
 use Illuminate\Http\Request;
 use Illuminate\Http\Resources\Json\JsonResource;
@@ -26,6 +24,8 @@ use Illuminate\Http\Resources\Json\JsonResource;
  * @property mixed $description
  * @property mixed $status
  * @property mixed $jiraProjects
+ * @property mixed $created_at
+ * @property mixed $updated_at
  * @method relationLoaded(string $model)
  */
 class JiraIssueResource extends JsonResource
@@ -43,9 +43,7 @@ class JiraIssueResource extends JsonResource
         $jiraProject = $this->when(
             $this->relationLoaded('jiraProjects') && $this->depthLevel(),
             function () {
-                return JiraProjectResource::make(
-                    JiraProject::where('jira_project_id', $this->jira_project_id)->first()->load('jiraProjectCategory') // @phpstan-ignore-line
-                )
+                return JiraProjectResource::make($this->jiraProjects)
                     ->setLevel($this->level)
                     ->setMaxLevel($this->maxLevel)
                     ->setPossibleTransitions(false);
@@ -60,7 +58,9 @@ class JiraIssueResource extends JsonResource
             'project' => $jiraProject,
             'summary' => $this->when($this->include('summary'), $this->summary),
             'development_category' => $this->when($this->include('development_category'), $this->development_category),
-            'status' => $this->when($this->include('status'), $this->status)
+            'status' => $this->when($this->include('status'), $this->status),
+            'created_at' => $this->when($this->include('created_at'), $this->created_at),
+            'updated_at' => $this->when($this->include('updated_at'), $this->updated_at)
         ];
     }
 }

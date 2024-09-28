@@ -22,7 +22,10 @@ use Illuminate\Database\Eloquent\Relations\BelongsTo;
  * @property mixed $development_category
  * @property mixed $description
  * @property mixed $status
+ * @property mixed $created_at
+ * @property mixed $updated_at
  * @method static updateOrCreate(array $whereCondition, array $parameters)
+ * @method static first()
  */
 class JiraIssue extends Model
 {
@@ -31,6 +34,7 @@ class JiraIssue extends Model
 
     protected $table = 'jira_issues';
     protected $fillable = [
+        'id',
         'jira_issue_id',
         'jira_issue_key',
         'jira_project_id',
@@ -39,8 +43,10 @@ class JiraIssue extends Model
         'status'
     ];
 
+    protected $with = ['jiraProjects'];
+
     public function jiraProjects()
     {
-        return $this->belongsTo(JiraProject::class);
+        return $this->belongsTo(JiraProject::class, 'jira_project_id', 'jira_project_id');
     }
 }

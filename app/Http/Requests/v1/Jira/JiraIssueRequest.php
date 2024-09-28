@@ -8,12 +8,14 @@ class JiraIssueRequest extends BaseRequest
 {
     protected array $publicAttributes = [
         'id' => ['rules' => ['uuid']],
-        'jira_issue_id' => ['rules' => ['required', 'string', 'unique:jira_issues,jira_issue_id']],
-        'jira_issue_key' => ['rules' => ['required', 'string', 'unique:jira_issues,jira_issue_key']],
+        'jira_issue_id' => ['rules' => ['required', 'int']],
+        'jira_issue_key' => ['rules' => ['required', 'string']],
         'project' => ['rules' => ['required', 'int', 'unique:jira_projects,jira_project_id']],
         'summary' => ['rules' => ['required', 'string', 'max:255']],
         'development_category' => ['rules' => ['required', 'string', 'max:255']],
-        'status' => ['rules' => ['required', 'max:255']]
+        'status' => ['rules' => ['required', 'max:255']],
+        'created_at' => ['rules' => ['required', 'date']],
+        'updated_at' => ['rules' => ['required', 'date']],
     ];
 
     protected array $relations = [
@@ -60,9 +62,9 @@ class JiraIssueRequest extends BaseRequest
     private function rulesForPost(): array
     {
         return [
-            'jira_issue_id' => 'required|string|unique:jira_issues,jira_issue_id',
+            'jira_issue_id' => 'required|int|min:1|unique:jira_issues,jira_issue_id',
             'jira_issue_key' => 'required|string|unique:jira_issues,jira_issue_key',
-            'jira_project_id' => 'required|int|unique:jira_projects,jira_project_id',
+            'jira_project_id' => 'required|int|min:1|exists:jira_projects,jira_project_id',
             'summary' => 'required|string|max:255',
             'development_category' => 'nullable|string',
             'status' => 'required|string'

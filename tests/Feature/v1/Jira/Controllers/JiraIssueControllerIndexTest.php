@@ -69,13 +69,13 @@ class JiraIssueControllerIndexTest extends TestCase
     public function an_authenticated_user_can_get_issues_with_the_project_relation(): void // phpcs:ignore
     {
         $this->loginWithFakeUser();
-        JiraIssue::factory()->count(1)->create([
+        $jiraIssue = JiraIssue::factory()->count(1)->create([
             'jira_issue_id' => 987654,
             'jira_issue_key' => 'LCD-123',
             'summary' => 'This is a summary about my issue',
             'development_category' => 'Migración tecnológica',
             'status' => 'Awaiting development'
-        ]);
+        ])->first();
         $jiraProjectCategory = JiraProjectCategory::first();
         $jiraProject = JiraProject::first();
 
@@ -131,7 +131,9 @@ class JiraIssueControllerIndexTest extends TestCase
                         ],
                         'summary' => 'This is a summary about my issue',
                         'development_category' => 'Migración tecnológica',
-                        'status' => 'Awaiting development'
+                        'status' => 'Awaiting development',
+                        'created_at' => $jiraIssue->created_at,
+                        'updated_at' => $jiraIssue->updated_at
                     ],
                 ],
                 'total' => 1,
@@ -179,6 +181,78 @@ class JiraIssueControllerIndexTest extends TestCase
             'errors' => [
                 'relations' => ['The invalid_relation is present in relations param but is not available hydration']
             ]
+        ]);
+    }
+
+    #[Test]
+    public function it_handles_invalid_pagination_parameters(): void // phpcs:ignore
+    {
+        $this->loginWithFakeUser();
+
+        $response = $this->getJson("$this->apiBaseUrl/jira/issues?page=-1&page_size=1000");
+
+        $response->assertStatus(Response::HTTP_UNPROCESSABLE_ENTITY);
+        $response->assertJsonFragment([
+            'data' => [],
+            'message' => 'The page size field must not be greater than 100. (and 1 more error)',
+            'errors' => [
+                'page' => ['The page field must be at least 1.'],
+                'page_size' => ['The page size field must not be greater than 100.']
+            ]
+        ]);
+    }
+
+    #[Test]
+    public function it_can_sort_issues_by_created_at(): void // phpcs:ignore
+    {
+        $this->loginWithFakeUser();
+        JiraIssue::factory()->count(3)->create();
+
+        $response = $this->getJson("$this->apiBaseUrl/jira/issues?sort_by=created_at&sort_order=asc");
+
+        $response->assertStatus(Response::HTTP_OK);
+        $responseData = $response->json('data.jira_issues');
+
+        $this->assertTrue($responseData[0]['created_at'] <= $responseData[1]['created_at']);
+    }
+
+    #[Test]
+    public function it_can_filter_issues_by_status(): void // phpcs:ignore
+    {
+        $this->loginWithFakeUser();
+        JiraIssue::factory()->create(['status' => 'open']);
+        JiraIssue::factory()->create(['status' => 'closed']);
+
+        $response = $this->getJson("$this->apiBaseUrl/jira/issues?status=open");
+
+        $response->assertStatus(Response::HTTP_OK);
+        $response->assertJsonFragment([
+            'status' => 'open',
+        ]);
+        $this->assertCount(1, $response->json('data.jira_issues'));
+    }
+
+    #[Test]
+    public function it_returns_an_empty_page_if_pagination_exceeds_the_total_number_of_issues(): void // phpcs:ignore
+    {
+        $this->loginWithFakeUser();
+        JiraIssue::factory()->count(25)->create();
+
+        $response = $this->getJson("$this->apiBaseUrl/jira/issues?page=2");
+
+        $response->assertStatus(Response::HTTP_OK);
+        $response->assertJsonFragment([
+            'data' => [
+                'jira_issues' => [],
+                'total' => 25,
+                'count' => 0,
+                'per_page' => 30,
+                'current_page' => 2,
+                'total_pages' => 1
+            ],
+            'status' => Response::HTTP_OK,
+            'message' => 'OK',
+            'errors' => []
         ]);
     }
 }

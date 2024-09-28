@@ -35,13 +35,15 @@ class JiraProject extends Model
         'jira_project_category_id'
     ];
 
+    protected $with = ['jiraProjectCategory'];
+
     public function jiraIssues(): HasMany
     {
-        return $this->hasMany(JiraIssue::class);
+        return $this->hasMany(JiraIssue::class, 'jira_project_id', 'jira_project_id');
     }
 
     public function jiraProjectCategory()
     {
-        return $this->belongsTo(JiraProjectCategory::class);
+        return $this->belongsTo(JiraProjectCategory::class, 'jira_project_category_id', 'jira_category_id');
     }
 }
