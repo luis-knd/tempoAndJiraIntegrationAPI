@@ -137,7 +137,7 @@ class JiraIssueController extends Controller
      * validated, and the issue is updated with the new information. Authorization is required to update the issue.
      *
      * @param JiraIssueRequest $request   The incoming request containing the updated data for the Jira issue.
-     * @param JiraIssue        $jiraIssue The Jira issue to be updated.
+     * @param JiraIssue        $issue The Jira issue to be updated.
      *
      * @return JsonResponse A JSON response containing the updated Jira issue.
      *
@@ -150,11 +150,11 @@ class JiraIssueController extends Controller
      *    }
      *  }
      */
-    public function update(JiraIssueRequest $request, JiraIssue $jiraIssue): JsonResponse
+    public function update(JiraIssueRequest $request, JiraIssue $issue): JsonResponse
     {
-        Gate::authorize('update', $jiraIssue);
+        Gate::authorize('update', $issue);
         $params = $request->validated();
-        $updatedIssue = $this->jiraIssueService->update($jiraIssue, $params);
+        $updatedIssue = $this->jiraIssueService->update($issue, $params);
         return JiraIssueResource::toJsonResponse($updatedIssue);
     }
 
@@ -165,7 +165,7 @@ class JiraIssueController extends Controller
      * It uses the `JiraIssueService` to perform the deletion and returns a confirmation message in the JSON response.
      *
      * @param JiraIssueRequest $request   The validated HTTP request.
-     * @param JiraIssue        $jiraIssue The Jira issue to be deleted.
+     * @param JiraIssue        $issue The Jira issue to be deleted.
      *
      * @return JsonResponse A JSON response confirming the deletion of the Jira issue.
      *
@@ -174,11 +174,11 @@ class JiraIssueController extends Controller
      * }
      */
 
-    public function destroy(JiraIssueRequest $request, JiraIssue $jiraIssue): JsonResponse
+    public function destroy(JiraIssueRequest $request, JiraIssue $issue): JsonResponse
     {
         $request->validated();
-        Gate::authorize('delete', $jiraIssue);
-        $this->jiraIssueService->delete($jiraIssue);
+        Gate::authorize('delete', $issue);
+        $this->jiraIssueService->delete($issue);
         return jsonResponse(message: 'JiraIssue deleted successfully.');
     }
 }

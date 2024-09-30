@@ -10,7 +10,8 @@ class JiraIssueRequest extends BaseRequest
         'id' => ['rules' => ['uuid']],
         'jira_issue_id' => ['rules' => ['required', 'int']],
         'jira_issue_key' => ['rules' => ['required', 'string']],
-        'project' => ['rules' => ['required', 'int', 'unique:jira_projects,jira_project_id']],
+        'jira_projects_jira_project_key' => ['rules' => ['string']],
+        'jira_projects_jira_project_id' => ['rules' => ['int', 'exists:jira_projects,jira_project_id']],
         'summary' => ['rules' => ['required', 'string', 'max:255']],
         'development_category' => ['rules' => ['required', 'string', 'max:255']],
         'status' => ['rules' => ['required', 'max:255']],
@@ -23,7 +24,8 @@ class JiraIssueRequest extends BaseRequest
     ];
 
     protected array $proxyFilters = [
-        'jira_projects.jira_project_id' => ['mediate' => 'jira_projects_jira_project_id']
+        'jiraProjects.jira_project_id' => ['mediate' => 'jira_projects_jira_project_id'],
+        'jiraProjects.jira_project_key' => ['mediate' => 'jira_projects_jira_project_key']
     ];
 
     public function authorize(): bool
@@ -54,7 +56,7 @@ class JiraIssueRequest extends BaseRequest
     {
         return [
             'summary' => 'required|string|max:255',
-            'development_category' => 'nullable|string',
+            'development_category' => 'required|string',
             'status' => 'required|string'
         ];
     }

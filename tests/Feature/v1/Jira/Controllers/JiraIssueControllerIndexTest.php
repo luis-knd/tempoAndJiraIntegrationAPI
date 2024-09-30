@@ -255,4 +255,98 @@ class JiraIssueControllerIndexTest extends TestCase
             'errors' => []
         ]);
     }
+
+
+    #[Test]
+    public function an_authenticated_user_can_get_issues_with_the_project_relation_an_filter_by_project_key(): void // phpcs:ignore
+    {
+        $this->loginWithFakeUser();
+        $jiraProject = JiraProject::factory()->create([
+            'jira_project_id' => 123456,
+            'name' => 'project name test',
+            'jira_project_key' => 'LCD',
+        ])->first();
+        $jiraProjectCategory = JiraProjectCategory::where(
+            'jira_category_id',
+            $jiraProject->jira_project_category_id // @phpstan-ignore-line
+        )->first();
+        JiraIssue::factory()->count(5)->create();
+        $jiraIssue = JiraIssue::factory()->count(1)->create([
+            'jira_project_id' => $jiraProject->jira_project_id, // @phpstan-ignore-line
+            'summary' => 'This is a summary about my issue',
+            'development_category' => 'Migración tecnológica',
+            'status' => 'Awaiting development',
+        ])->first();
+
+        $response = $this->getJson(
+            "$this->apiBaseUrl/jira/issues?relations=jira_projects&jira_projects_jira_project_key=LCD"
+        );
+
+        $response->assertStatus(Response::HTTP_OK);
+        $this->assertCount(1, $response->json('data.jira_issues'));
+        $response->assertJsonStructure(
+            [
+                'data' => [
+                    'jira_issues' => [
+                        [
+                            'jira_issue_id',
+                            'jira_issue_key',
+                            'project' => [
+                                'jira_project_id',
+                                'name',
+                                'category' => [
+                                    'jira_category_id',
+                                    'name',
+                                    'description'
+                                ],
+                            ],
+                            'summary',
+                            'development_category',
+                            'status'
+                        ],
+                    ],
+                    'total',
+                    'count',
+                    'per_page',
+                    'current_page',
+                    'total_pages'
+                ],
+                'status',
+                'message',
+                'errors'
+            ]
+        );
+        $response->assertJsonFragment([
+            'data' => [
+                'jira_issues' => [
+                    [
+                        'jira_issue_id' => $jiraIssue->jira_issue_id, // @phpstan-ignore-line
+                        'jira_issue_key' => $jiraIssue->jira_issue_key, // @phpstan-ignore-line
+                        'project' => [
+                            'jira_project_id' => 123456,
+                            'name' => 'project name test',
+                            'category' => [
+                                'jira_category_id' => $jiraProjectCategory->jira_category_id,
+                                'name' => $jiraProjectCategory->name,
+                                'description' => $jiraProjectCategory->description
+                            ],
+                        ],
+                        'summary' => 'This is a summary about my issue',
+                        'development_category' => 'Migración tecnológica',
+                        'status' => 'Awaiting development',
+                        'created_at' => $jiraIssue->created_at, // @phpstan-ignore-line
+                        'updated_at' => $jiraIssue->updated_at // @phpstan-ignore-line
+                    ],
+                ],
+                'total' => 1,
+                'count' => 1,
+                'per_page' => 30,
+                'current_page' => 1,
+                'total_pages' => 1
+            ],
+            'status' => Response::HTTP_OK,
+            'message' => 'OK',
+            'errors' => []
+        ]);
+    }
 }

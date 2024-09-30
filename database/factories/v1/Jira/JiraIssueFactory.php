@@ -45,8 +45,9 @@ class JiraIssueFactory extends Factory
         return [
             'jira_issue_id' => $this->faker->unique()->randomNumber(6, true),
             'jira_issue_key' => $issueKey,
-            //@phpstan-ignore-next-line
-            'jira_project_id' => JiraProject::factory()->create()->jira_project_id,
+            'jira_project_id' => function () {
+                return JiraProject::factory()->create()->jira_project_id; // @phpstan-ignore-line
+            },
             'summary' => $this->faker->sentence(8),
             'development_category' => $developmentCategory[random_int(0, 6)],
             'status' => $status[random_int(0, 6)]

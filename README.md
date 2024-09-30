@@ -1,7 +1,8 @@
 ## Jira :tanabata_tree: and Tempo :timer_clock: integration API
-This Laravel application is designed to integrate seamlessly with the Tempo and Jira APIs. It facilitates the
-synchronization of project management data, allowing users to efficiently manage their tasks, track time, and gain
-insights through combined data from Tempo and Jira. The application adheres to clean code principles,
+This Laravel application is designed to integrate seamlessly with the [Tempo](https://apidocs.tempo.io/) and
+[Jira](https://developer.atlassian.com/cloud/jira/platform/rest/v3/intro/#version) APIs.
+It facilitates the synchronization of project management data, allowing users to efficiently manage their tasks, track time,
+and gain insights through combined data from Tempo and Jira. The application adheres to clean code principles,
 utilizes SOLID design patterns, and is built with modularity and scalability in mind.
 
 
