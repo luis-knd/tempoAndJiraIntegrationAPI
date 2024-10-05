@@ -3,6 +3,7 @@
 namespace App\Http\Requests\v1\Tempo;
 
 use App\Http\Requests\BaseRequest;
+use App\Http\Requests\SanitizesInput;
 
 /**
  * Class TimeEntryRequest
@@ -13,6 +14,23 @@ use App\Http\Requests\BaseRequest;
  */
 class TimeEntryRequest extends BaseRequest
 {
+    use SanitizesInput;
+
+    protected array $fieldsToStrip = [
+        'tempo_worklog_id',
+        'jira_issue_id',
+        'jira_user_id',
+        'time_spent_in_minutes',
+        'entry_created_at',
+        'entry_updated_at'
+    ];
+    protected array $fieldsToClean = ['description'];
+
+    protected function prepareForValidation(): void
+    {
+        $this->merge($this->sanitizeInput($this->all()));
+    }
+
     protected array $publicAttributes = [
         'tempo_worklog_id' => ['rules' => ['required', 'integer', 'min:0']],
         'jira_issue_id' => ['rules' => ['required', 'integer', 'min:0', 'exists:jira_issues,jira_issue_id']],

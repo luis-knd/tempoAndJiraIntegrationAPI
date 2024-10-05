@@ -3,9 +3,20 @@
 namespace App\Http\Requests\v1\Jira;
 
 use App\Http\Requests\BaseRequest;
+use App\Http\Requests\SanitizesInput;
 
 class JiraSyncRequest extends BaseRequest
 {
+    use SanitizesInput;
+
+    protected array $fieldsToStrip = ['jql'];
+    protected array $fieldsToClean = [];
+
+    protected function prepareForValidation(): void
+    {
+        $this->merge($this->sanitizeInput($this->all()));
+    }
+
     protected array $publicAttributes = [
         'jql' => ['rules' => ['required', 'string']],
     ];
@@ -23,7 +34,7 @@ class JiraSyncRequest extends BaseRequest
     public function rules(): array
     {
         return [
-            /** @example created >= startOfMonth()*/
+            /** @example created >= startOfMonth() */
             'jql' => 'required|string'
         ];
     }

@@ -56,7 +56,7 @@ class JiraProjectCategoryService
     private function setParams(array $params, JiraProjectCategory $jiraProjectCategory): void
     {
         $jiraProjectCategory->name = $params['name'];
-        $jiraProjectCategory->description = $params['description'];
+        $jiraProjectCategory->description = $params['description'] ?? null;
         $jiraProjectCategory->jira_category_id = $params['jira_category_id'];
     }
 

@@ -148,4 +148,42 @@ class JiraIssueControllerStoreTest extends TestCase
             ]
         ]);
     }
+
+    #[Test]
+    public function it_sanitizes_html_input(): void// phpcs:ignore
+    {
+        $this->loginWithFakeUser();
+        $jiraProject = JiraProject::factory()->create()->first();
+        $payload = [
+            'jira_issue_key' => '<p>PROJ-105<alert("XSS")</script></p>',
+            'jira_issue_id' => 999,
+            'jira_project_id' => $jiraProject->jira_project_id, //@phpstan-ignore-line
+            'summary' => '<p>Safe <strong>Summary</strong></p><script>alert("XSS")</script>',
+            'development_category' => 'Bug<b></b>',
+            'status' => 'Open<span></span>',
+        ];
+
+        $response = $this->postJson("$this->apiBaseUrl/jira/issues", $payload);
+
+        $response->assertStatus(Response::HTTP_OK);
+        $response->assertJsonFragment([
+            'data' => [
+                'jira_issue' => [
+                    'jira_issue_id' => 999,
+                    'jira_issue_key' => 'PROJ-105',
+                    'project' => [
+                        'jira_project_id' => $jiraProject->jira_project_id, //@phpstan-ignore-line
+                    ],
+                    'summary' => '<p>Safe <strong>Summary</strong></p>',
+                    'development_category' => 'Bug',
+                    'status' => 'Open',
+                    'created_at' => $response->json('data.jira_issue.created_at'),
+                    'updated_at' => $response->json('data.jira_issue.updated_at'),
+                ],
+            ],
+            'status' => Response::HTTP_OK,
+            'message' => 'OK',
+            'errors' => []
+        ]);
+    }
 }

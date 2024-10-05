@@ -3,9 +3,20 @@
 namespace App\Http\Requests\v1\Jira;
 
 use App\Http\Requests\BaseRequest;
+use App\Http\Requests\SanitizesInput;
 
 class JiraUserRequest extends BaseRequest
 {
+    use SanitizesInput;
+
+    protected array $fieldsToStrip = ['jira_user_id', 'name', 'email', 'jira_user_type', 'active'];
+    protected array $fieldsToClean = [];
+
+    protected function prepareForValidation(): void
+    {
+        $this->merge($this->sanitizeInput($this->all()));
+    }
+
     protected array $publicAttributes = [
         'id' => ['rules' => ['uuid']],
         'jira_user_id' => ['rules' => ['required', 'string', 'unique:jira_users,jira_user_id']],

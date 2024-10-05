@@ -3,10 +3,21 @@
 namespace App\Http\Requests\v1\Basic;
 
 use App\Http\Requests\BaseRequest;
+use App\Http\Requests\SanitizesInput;
 use Illuminate\Contracts\Validation\ValidationRule;
 
 class UserRequest extends BaseRequest
 {
+    use SanitizesInput;
+
+    protected array $fieldsToStrip = ['name', 'lastname', 'email'];
+    protected array $fieldsToClean = [];
+
+    protected function prepareForValidation(): void
+    {
+        $this->merge($this->sanitizeInput($this->all()));
+    }
+
     protected array $publicAttributes = [
         'id' => ['rules' => ['uuid']],
         'name' => ['rules' => ['string', 'max:255']],

@@ -3,9 +3,20 @@
 namespace App\Http\Requests\v1\Jira;
 
 use App\Http\Requests\BaseRequest;
+use App\Http\Requests\SanitizesInput;
 
 class JiraProjectCategoryRequest extends BaseRequest
 {
+    use SanitizesInput;
+
+    protected array $fieldsToStrip = ['name', 'jira_category_id'];
+    protected array $fieldsToClean = ['description'];
+
+    protected function prepareForValidation(): void
+    {
+        $this->merge($this->sanitizeInput($this->all()));
+    }
+
     protected array $publicAttributes = [
         'name' => ['rules' => ['string', 'max:255']],
         'description' => ['rules' => ['string']],
@@ -50,7 +61,7 @@ class JiraProjectCategoryRequest extends BaseRequest
     {
         return [
             'jira_category_id' => 'required|int|unique:jira_project_categories,jira_category_id',
-            'name' => 'required|string|max:255',
+            'name' => 'required|string|max:255|unique:jira_project_categories,name',
             'description' => 'nullable|string',
         ];
     }
@@ -58,7 +69,7 @@ class JiraProjectCategoryRequest extends BaseRequest
     private function rulesForPut(): array
     {
         return [
-            'name' => 'required|string|max:255',
+            'name' => 'required|string|max:255|unique:jira_project_categories,name',
             'description' => 'nullable|string',
         ];
     }

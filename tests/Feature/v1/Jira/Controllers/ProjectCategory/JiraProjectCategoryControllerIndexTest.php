@@ -4,6 +4,7 @@ namespace Tests\Feature\v1\Jira\Controllers\ProjectCategory;
 
 use App\Models\v1\Jira\JiraProjectCategory;
 use Faker\Factory;
+use Faker\Generator;
 use Illuminate\Foundation\Testing\RefreshDatabase;
 use PHPUnit\Framework\Attributes\Test;
 use Symfony\Component\HttpFoundation\Response;
@@ -13,7 +14,7 @@ class JiraProjectCategoryControllerIndexTest extends TestCase
 {
     use RefreshDatabase;
 
-    private $faker;
+    private Generator $faker;
 
     public function setUp(): void
     {

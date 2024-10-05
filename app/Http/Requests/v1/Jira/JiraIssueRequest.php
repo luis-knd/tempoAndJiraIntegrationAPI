@@ -3,9 +3,20 @@
 namespace App\Http\Requests\v1\Jira;
 
 use App\Http\Requests\BaseRequest;
+use App\Http\Requests\SanitizesInput;
 
 class JiraIssueRequest extends BaseRequest
 {
+    use SanitizesInput;
+
+    protected array $fieldsToStrip = ['jira_issue_key', 'development_category', 'status'];
+    protected array $fieldsToClean = ['summary'];
+
+    protected function prepareForValidation(): void
+    {
+        $this->merge($this->sanitizeInput($this->all()));
+    }
+
     protected array $publicAttributes = [
         'id' => ['rules' => ['uuid']],
         'jira_issue_id' => ['rules' => ['required', 'int']],

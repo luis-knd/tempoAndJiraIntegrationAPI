@@ -3,6 +3,7 @@
 namespace App\Http\Requests\v1\Jira;
 
 use App\Http\Requests\BaseRequest;
+use App\Http\Requests\SanitizesInput;
 
 /**
  * Class JiraTeamRequest
@@ -13,6 +14,16 @@ use App\Http\Requests\BaseRequest;
  */
 class JiraTeamRequest extends BaseRequest
 {
+    use SanitizesInput;
+
+    protected array $fieldsToStrip = ['jira_team_id', 'name'];
+    protected array $fieldsToClean = [];
+
+    protected function prepareForValidation(): void
+    {
+        $this->merge($this->sanitizeInput($this->all()));
+    }
+
     protected array $publicAttributes = [
         'id' => ['rules' => ['uuid']],
         'jira_team_id' => ['rules' => ['required', 'uuid', 'unique:jira_teams,jira_team_id']],
