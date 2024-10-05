@@ -11,6 +11,7 @@ use App\Models\v1\Tempo\TimeEntry;
 use App\Services\v1\Tempo\TimeEntryService;
 use Illuminate\Http\JsonResponse;
 use Illuminate\Support\Facades\Gate;
+use JsonException;
 
 /**
  * Class TimeEntryController
@@ -33,14 +34,23 @@ class TimeEntryController extends Controller
      *
      * @param TimeEntryRequest $request
      * @return JsonResponse
-     * @throws UnprocessableException
+     * @throws JsonException
      */
     public function index(TimeEntryRequest $request): JsonResponse
     {
-        $params = $request->validated();
-        $paginator = $this->timeEntryService->index($params);
-        $timeEntries = new TimeEntryCollection($paginator);
-        return jsonResponse(data: $timeEntries);
+        try {
+            $params = $request->validated();
+            $paginator = $this->timeEntryService->index($params);
+            $timeEntries = new TimeEntryCollection($paginator);
+            return jsonResponse(data: $timeEntries);
+        } catch (UnprocessableException $e) {
+            $errorMessage = $e->getMessage();
+            return jsonResponse(
+                status: $e->getCode(),
+                message: $errorMessage,
+                errors: ['params' => $errorMessage]
+            );
+        }
     }
 
     public function store(TimeEntryRequest $request): JsonResponse
@@ -54,16 +64,25 @@ class TimeEntryController extends Controller
      *  show
      *
      * @param TimeEntryRequest $request
-     * @param TimeEntry               $timeEntry
+     * @param TimeEntry        $timeEntry
      * @return JsonResponse
-     * @throws UnprocessableException
+     * @throws JsonException
      */
     public function show(TimeEntryRequest $request, TimeEntry $timeEntry): JsonResponse
     {
-        $params = $request->validated();
-        Gate::authorize('view', $timeEntry);
-        $entry = $this->timeEntryService->load($timeEntry, $params);
-        return TimeEntryResource::toJsonResponse($entry);
+        try {
+            $params = $request->validated();
+            Gate::authorize('view', $timeEntry);
+            $entry = $this->timeEntryService->load($timeEntry, $params);
+            return TimeEntryResource::toJsonResponse($entry);
+        } catch (UnprocessableException $e) {
+            $errorMessage = $e->getMessage();
+            return jsonResponse(
+                status: $e->getCode(),
+                message: $errorMessage,
+                errors: ['params' => $errorMessage]
+            );
+        }
     }
 
     public function update(TimeEntryRequest $request, TimeEntry $timeEntry): JsonResponse

@@ -11,6 +11,7 @@ use App\Models\v1\Jira\JiraUser;
 use App\Services\v1\Jira\JiraUserService;
 use Illuminate\Http\JsonResponse;
 use Illuminate\Support\Facades\Gate;
+use JsonException;
 
 /**
  * Class JiraUserController
@@ -34,16 +35,24 @@ class JiraUserController extends Controller
      *
      * @param JiraUserRequest $request
      * @return JsonResponse
-     * @throws UnprocessableException
-     *
+     * @throws JsonException
      */
     public function index(JiraUserRequest $request): JsonResponse
     {
-        $params = $request->validated();
-        $paginator = $this->jiraUserService->index($params);
+        try {
+            $params = $request->validated();
+            $paginator = $this->jiraUserService->index($params);
 
-        $jiraUsers = new JiraUserCollection($paginator);
-        return jsonResponse(data: $jiraUsers);
+            $jiraUsers = new JiraUserCollection($paginator);
+            return jsonResponse(data: $jiraUsers);
+        } catch (UnprocessableException $e) {
+            $errorMessage = $e->getMessage();
+            return jsonResponse(
+                status: $e->getCode(),
+                message: $errorMessage,
+                errors: ['params' => $errorMessage]
+            );
+        }
     }
 
 
@@ -60,15 +69,23 @@ class JiraUserController extends Controller
      * @param JiraUserRequest $request
      * @param JiraUser        $jiraUser
      * @return JsonResponse
-     * @throws UnprocessableException
-     *
+     * @throws \JsonException
      */
     public function show(JiraUserRequest $request, JiraUser $jiraUser): JsonResponse
     {
-        $params = $request->validated();
-        Gate::authorize('view', $jiraUser);
-        $user = $this->jiraUserService->load($jiraUser, $params);
-        return JiraUserResource::toJsonResponse($user);
+        try {
+            $params = $request->validated();
+            Gate::authorize('view', $jiraUser);
+            $user = $this->jiraUserService->load($jiraUser, $params);
+            return JiraUserResource::toJsonResponse($user);
+        } catch (UnprocessableException $e) {
+            $errorMessage = $e->getMessage();
+            return jsonResponse(
+                status: $e->getCode(),
+                message: $errorMessage,
+                errors: ['params' => $errorMessage]
+            );
+        }
     }
 
     public function update(JiraUserRequest $request, JiraUser $jiraUser): JsonResponse

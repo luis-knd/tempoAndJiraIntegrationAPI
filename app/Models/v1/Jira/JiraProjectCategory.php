@@ -30,6 +30,8 @@ class JiraProjectCategory extends Model
     use SoftDeletes;
     use HasUuids;
 
+    protected $table = 'jira_project_categories';
+
     protected $fillable = [
         'jira_category_id',
         'name',

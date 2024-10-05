@@ -38,7 +38,6 @@ class JiraIssueController extends Controller
      *
      * @return JsonResponse A JSON response containing the paginated list of Jira issues.
      *
-     * @throws UnprocessableException If the request contains invalid data, this exception is thrown.
      * @throws JsonException If the response cannot be properly encoded to JSON.
      * @response array{
      *   "data": array{
@@ -62,10 +61,19 @@ class JiraIssueController extends Controller
      */
     public function index(JiraIssueRequest $request): JsonResponse
     {
-        $params = $request->validated();
-        $paginator = $this->jiraIssueService->index($params);
-        $jiraIssues = new JiraIssueCollection($paginator);
-        return jsonResponse(data: $jiraIssues);
+        try {
+            $params = $request->validated();
+            $paginator = $this->jiraIssueService->index($params);
+            $jiraIssues = new JiraIssueCollection($paginator);
+            return jsonResponse(data: $jiraIssues);
+        } catch (UnprocessableException $e) {
+            $errorMessage = $e->getMessage();
+            return jsonResponse(
+                status: $e->getCode(),
+                message: $errorMessage,
+                errors: ['params' => $errorMessage]
+            );
+        }
     }
 
     /**
@@ -105,7 +113,7 @@ class JiraIssueController extends Controller
      *
      * @param JiraIssueRequest $request   The validated HTTP request containing any additional parameters for loading
      *                                    the issue.
-     * @param JiraIssue        $issue The Jira issue to be displayed.
+     * @param JiraIssue        $issue     The Jira issue to be displayed.
      *
      * @return JsonResponse A JSON response containing the details of the Jira issue.
      *
@@ -119,15 +127,24 @@ class JiraIssueController extends Controller
      *      }
      * }
      *
-     * @throws UnprocessableException If there is an issue with the request validation.
      * @throws JsonException If the response cannot be properly encoded to JSON.
      */
     public function show(JiraIssueRequest $request, JiraIssue $issue): JsonResponse
     {
-        $params = $request->validated();
-        Gate::authorize('view', $issue);
-        $issue = $this->jiraIssueService->load($issue, $params);
-        return JiraIssueResource::toJsonResponse($issue);
+
+        try {
+            $params = $request->validated();
+            Gate::authorize('view', $issue);
+            $issue = $this->jiraIssueService->load($issue, $params);
+            return JiraIssueResource::toJsonResponse($issue);
+        } catch (UnprocessableException $e) {
+            $errorMessage = $e->getMessage();
+            return jsonResponse(
+                status: $e->getCode(),
+                message: $errorMessage,
+                errors: ['params' => $errorMessage]
+            );
+        }
     }
 
     /**
@@ -136,8 +153,8 @@ class JiraIssueController extends Controller
      * This endpoint allows for the modification of an existing Jira issue. The data provided in the request is
      * validated, and the issue is updated with the new information. Authorization is required to update the issue.
      *
-     * @param JiraIssueRequest $request   The incoming request containing the updated data for the Jira issue.
-     * @param JiraIssue        $issue The Jira issue to be updated.
+     * @param JiraIssueRequest $request The incoming request containing the updated data for the Jira issue.
+     * @param JiraIssue        $issue   The Jira issue to be updated.
      *
      * @return JsonResponse A JSON response containing the updated Jira issue.
      *
@@ -164,8 +181,8 @@ class JiraIssueController extends Controller
      * This method handles the deletion of a specific Jira issue. The user must be authorized to delete the issue.
      * It uses the `JiraIssueService` to perform the deletion and returns a confirmation message in the JSON response.
      *
-     * @param JiraIssueRequest $request   The validated HTTP request.
-     * @param JiraIssue        $issue The Jira issue to be deleted.
+     * @param JiraIssueRequest $request The validated HTTP request.
+     * @param JiraIssue        $issue   The Jira issue to be deleted.
      *
      * @return JsonResponse A JSON response confirming the deletion of the Jira issue.
      *

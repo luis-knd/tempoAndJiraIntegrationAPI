@@ -1,6 +1,6 @@
 <?php
 
-namespace Feature\v1\Jira\Controllers;
+namespace Feature\v1\Jira\Controllers\Issue;
 
 use App\Models\v1\Jira\JiraIssue;
 use App\Models\v1\Jira\JiraProject;
@@ -233,6 +233,55 @@ class JiraIssueControllerIndexTest extends TestCase
     }
 
     #[Test]
+    public function it_can_filter_issues_by_jira_issue_id_using_criteria_less_than(): void // phpcs:ignore
+    {
+        $this->loginWithFakeUser();
+        $issuesIds = [
+            ['jira_issue_id' => 123],
+            ['jira_issue_id' => 500],
+            ['jira_issue_id' => 690],
+            ['jira_issue_id' => 830],
+            ['jira_issue_id' => 12],
+            ['jira_issue_id' => 72]
+        ];
+        foreach ($issuesIds as $issue) {
+            JiraIssue::factory()->create($issue);
+        }
+
+        $response = $this->getJson("$this->apiBaseUrl/jira/issues?jira_issue_id[lt]=500&sort=-jira_issue_id");
+
+        $response->assertStatus(Response::HTTP_OK);
+        $response->assertJsonFragment([
+            'total' => 3,
+            'count' => 3
+        ]);
+        $this->assertCount(3, $response->json('data.jira_issues'));
+        $this->assertEquals('123', $response->json('data.jira_issues.0.jira_issue_id'));
+        $this->assertEquals('12', $response->json('data.jira_issues.2.jira_issue_id'));
+    }
+
+    #[Test]
+    public function it_cannot_filter_issues_by_status_using_wrong_criteria_parameter(): void // phpcs:ignore
+    {
+        $this->loginWithFakeUser();
+        JiraIssue::factory()->create(['status' => 'Awaiting Development']);
+        JiraIssue::factory()->create(['status' => 'Awaiting Test']);
+        JiraIssue::factory()->create(['status' => 'Closed']);
+        $wrongParam = 'like';
+
+        $response = $this->getJson("$this->apiBaseUrl/jira/issues?status[$wrongParam]=Awaiting%25");
+
+        $response->assertJsonFragment([
+            'data' => [],
+            'message' => "$wrongParam is not an acceptable query criteria",
+            'errors' => [
+                'params' => "$wrongParam is not an acceptable query criteria",
+            ],
+            'status' => Response::HTTP_UNPROCESSABLE_ENTITY
+        ]);
+    }
+
+    #[Test]
     public function it_returns_an_empty_page_if_pagination_exceeds_the_total_number_of_issues(): void // phpcs:ignore
     {
         $this->loginWithFakeUser();
@@ -255,7 +304,6 @@ class JiraIssueControllerIndexTest extends TestCase
             'errors' => []
         ]);
     }
-
 
     #[Test]
     public function an_authenticated_user_can_get_issues_with_the_project_relation_an_filter_by_project_key(): void // phpcs:ignore

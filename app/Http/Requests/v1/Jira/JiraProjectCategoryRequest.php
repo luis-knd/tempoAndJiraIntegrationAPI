@@ -7,10 +7,9 @@ use App\Http\Requests\BaseRequest;
 class JiraProjectCategoryRequest extends BaseRequest
 {
     protected array $publicAttributes = [
-        'id' => ['rules' => ['uuid']],
         'name' => ['rules' => ['string', 'max:255']],
         'description' => ['rules' => ['string']],
-        'jira_category_id' => ['rules' => ['required', 'unique:jira_project_categories,jira_category_id']]
+        'jira_category_id' => ['rules' => ['required', 'exists:jira_project_categories,jira_category_id']]
     ];
 
     protected array $relations = [
@@ -32,12 +31,35 @@ class JiraProjectCategoryRequest extends BaseRequest
     public function rules(): array
     {
         return match ($this->getMethod()) {
-            'POST', 'PUT' => [
-                'jira_category_id' => 'required|unique:jira_project_categories,jira_category_id',
-                'name' => 'required|string|max:255',
-                'description' => 'nullable|string',
-            ],
+            'GET' => $this->rulesForGet(),
+            'POST' => $this->rulesForPost(),
+            'PUT' => $this->rulesForPut(),
             default => [],
         };
+    }
+
+    private function rulesForGet(): array
+    {
+        if (!$this->route('jira_issue', false)) {
+            return $this->getFilterRules();
+        }
+        return $this->showRules();
+    }
+
+    private function rulesForPost(): array
+    {
+        return [
+            'jira_category_id' => 'required|int|unique:jira_project_categories,jira_category_id',
+            'name' => 'required|string|max:255',
+            'description' => 'nullable|string',
+        ];
+    }
+
+    private function rulesForPut(): array
+    {
+        return [
+            'name' => 'required|string|max:255',
+            'description' => 'nullable|string',
+        ];
     }
 }

@@ -5,6 +5,7 @@ namespace App\Http\Controllers\v1\Jira;
 use App\Exceptions\UnprocessableException;
 use App\Http\Controllers\Controller;
 use App\Http\Requests\v1\Jira\JiraProjectCategoryRequest;
+use App\Http\Resources\v1\Jira\JiraProjectCategoryCollection;
 use App\Http\Resources\v1\Jira\JiraProjectCategoryResource;
 use App\Models\v1\Jira\JiraProjectCategory;
 use App\Services\v1\Jira\JiraProjectCategoryService;
@@ -20,13 +21,29 @@ class JiraProjectCategoryController extends Controller
         $this->jiraProjectCategoryService = $jiraProjectCategoryService;
     }
 
+    /**
+     *  index
+     *
+     * @param \App\Http\Requests\v1\Jira\JiraProjectCategoryRequest $request
+     * @return \Illuminate\Http\JsonResponse
+     * @throws \App\Exceptions\BadRequestException
+     * @throws \JsonException
+     */
     public function index(JiraProjectCategoryRequest $request): JsonResponse
     {
-        $params = $request->validated();
-        $paginator = $this->jiraProjectCategoryService->index($params);
-
-        $categories = new JiraProjectCategoryResource($paginator);
-        return jsonResponse(data: $categories);
+        try {
+            $params = $request->validated();
+            $paginator = $this->jiraProjectCategoryService->index($params);
+            $categories = new JiraProjectCategoryCollection($paginator);
+            return jsonResponse(data: $categories);
+        } catch (UnprocessableException $e) {
+            $errorMessage = $e->getMessage();
+            return jsonResponse(
+                status: $e->getCode(),
+                message: $errorMessage,
+                errors: ['params' => $errorMessage]
+            );
+        }
     }
 
     public function store(JiraProjectCategoryRequest $request): JsonResponse
@@ -41,17 +58,25 @@ class JiraProjectCategoryController extends Controller
      *  show
      *
      * @param JiraProjectCategoryRequest $request
-     * @param JiraProjectCategory               $category
+     * @param JiraProjectCategory        $category
      * @return JsonResponse
-     * @throws UnprocessableException
      * @throws JsonException
      */
     public function show(JiraProjectCategoryRequest $request, JiraProjectCategory $category): JsonResponse
     {
-        $params = $request->validated();
-        return JiraProjectCategoryResource::toJsonResponse(
-            $this->jiraProjectCategoryService->load($category, $params)
-        );
+        try {
+            $params = $request->validated();
+            return JiraProjectCategoryResource::toJsonResponse(
+                $this->jiraProjectCategoryService->load($category, $params)
+            );
+        } catch (UnprocessableException $e) {
+            $errorMessage = $e->getMessage();
+            return jsonResponse(
+                status: $e->getCode(),
+                message: $errorMessage,
+                errors: ['params' => $errorMessage]
+            );
+        }
     }
 
     public function update(JiraProjectCategoryRequest $request, JiraProjectCategory $category): JsonResponse

@@ -43,8 +43,6 @@ class UserController extends Controller
      * @return JsonResponse A JSON response containing the list of users and the total count of users.
      *                             Each user in the list is formatted according to the `UserResource`
      *                             collection response format.
-     * @throws UnprocessableException If the request cannot be processed due to validation errors
-     *                             or other semantic issues.
      * @throws JsonException
      *
      * @response array{
@@ -65,11 +63,20 @@ class UserController extends Controller
      */
     public function index(UserRequest $request): JsonResponse
     {
-        $params = $request->validated();
-        $paginator = $this->userService->index($params);
+        try {
+            $params = $request->validated();
+            $paginator = $this->userService->index($params);
 
-        $users = new UserCollection($paginator);
-        return jsonResponse(data: $users);
+            $users = new UserCollection($paginator);
+            return jsonResponse(data: $users);
+        } catch (UnprocessableException $e) {
+            $errorMessage = $e->getMessage();
+            return jsonResponse(
+                status: $e->getCode(),
+                message: $errorMessage,
+                errors: ['params' => $errorMessage]
+            );
+        }
     }
 
     /**
@@ -121,7 +128,6 @@ class UserController extends Controller
      * @param UserRequest $request The validated request containing parameters for fetching user details.
      * @param User        $user    The user entity instance to be displayed.
      * @return JsonResponse A JSON response containing the detailed information of the specified user.
-     * @throws UnprocessableException
      * @throws JsonException
      *
      * @response array{
@@ -140,11 +146,20 @@ class UserController extends Controller
      */
     public function show(UserRequest $request, User $user): JsonResponse
     {
-        $params = $request->validated();
-        Gate::authorize('view', $user);
-        return UserResource::toJsonResponse(
-            $this->userService->load($user, $params)
-        );
+        try {
+            $params = $request->validated();
+            Gate::authorize('view', $user);
+            return UserResource::toJsonResponse(
+                $this->userService->load($user, $params)
+            );
+        } catch (UnprocessableException $e) {
+            $errorMessage = $e->getMessage();
+            return jsonResponse(
+                status: $e->getCode(),
+                message: $errorMessage,
+                errors: ['params' => $errorMessage]
+            );
+        }
     }
 
     /**

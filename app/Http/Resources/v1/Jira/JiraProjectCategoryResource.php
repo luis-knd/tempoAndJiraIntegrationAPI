@@ -28,7 +28,6 @@ class JiraProjectCategoryResource extends JsonResource
 {
     use FieldsResourceTraits;
 
-
     public static function toJsonResponse(JiraProjectCategory $jiraProjectCategory): JsonResponse
     {
         return jsonResponse(['jira_project_category' => self::make($jiraProjectCategory)]);

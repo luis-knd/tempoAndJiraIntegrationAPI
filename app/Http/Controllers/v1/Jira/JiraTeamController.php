@@ -33,16 +33,24 @@ class JiraTeamController extends Controller
      *
      * @param JiraTeamRequest $request
      * @return JsonResponse
-     * @throws UnprocessableException
      *
      */
     public function index(JiraTeamRequest $request): JsonResponse
     {
-        $params = $request->validated();
-        $paginator = $this->jiraTeamService->index($params);
+        try {
+            $params = $request->validated();
+            $paginator = $this->jiraTeamService->index($params);
 
-        $jiraTeams = new JiraTeamCollection($paginator);
-        return jsonResponse(data: $jiraTeams);
+            $jiraTeams = new JiraTeamCollection($paginator);
+            return jsonResponse(data: $jiraTeams);
+        } catch (UnprocessableException $e) {
+            $errorMessage = $e->getMessage();
+            return jsonResponse(
+                status: $e->getCode(),
+                message: $errorMessage,
+                errors: ['params' => $errorMessage]
+            );
+        }
     }
 
     public function store(JiraTeamRequest $request): JsonResponse
@@ -58,15 +66,23 @@ class JiraTeamController extends Controller
      * @param JiraTeamRequest $request
      * @param JiraTeam        $jiraTeam
      * @return JsonResponse
-     * @throws UnprocessableException
      *
      */
     public function show(JiraTeamRequest $request, JiraTeam $jiraTeam): JsonResponse
     {
-        $params = $request->validated();
-        Gate::authorize('view', $jiraTeam);
-        $team = $this->jiraTeamService->load($jiraTeam, $params);
-        return JiraTeamResource::toJsonResponse($team);
+        try {
+            $params = $request->validated();
+            Gate::authorize('view', $jiraTeam);
+            $team = $this->jiraTeamService->load($jiraTeam, $params);
+            return JiraTeamResource::toJsonResponse($team);
+        } catch (UnprocessableException $e) {
+            $errorMessage = $e->getMessage();
+            return jsonResponse(
+                status: $e->getCode(),
+                message: $errorMessage,
+                errors: ['params' => $errorMessage]
+            );
+        }
     }
 
     public function update(JiraTeamRequest $request, JiraTeam $jiraTeam): JsonResponse

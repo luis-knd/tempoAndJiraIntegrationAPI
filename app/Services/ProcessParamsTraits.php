@@ -5,6 +5,7 @@ namespace App\Services;
 use App\Exceptions\UnprocessableException;
 use DateTime;
 use JsonException;
+use Symfony\Component\HttpFoundation\Response;
 
 /**
  * Trait ProcessParamsTraits
@@ -152,7 +153,8 @@ trait ProcessParamsTraits
                 foreach ($value as $criteria => $val) {
                     if (!array_key_exists($criteria, Criteria::MAP)) {
                         throw new UnprocessableException(
-                            __(":criteria is not an acceptable query criteria", ['criteria' => $criteria])
+                            __(":criteria is not an acceptable query criteria", ['criteria' => $criteria]),
+                            Response::HTTP_UNPROCESSABLE_ENTITY
                         );
                     }
                     $operator = Criteria::MAP[$criteria];

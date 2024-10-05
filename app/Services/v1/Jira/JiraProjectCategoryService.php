@@ -2,6 +2,7 @@
 
 namespace App\Services\v1\Jira;
 
+use App\Exceptions\BadRequestException;
 use App\Exceptions\UnprocessableException;
 use App\Models\v1\Jira\JiraProjectCategory;
 use App\Repository\Eloquent\v1\Jira\JiraProjectCategoryRepository;
@@ -24,14 +25,23 @@ class JiraProjectCategoryService
     {
     }
 
+    /**
+     * Retrieves a paginated list of JiraProjectCategory objects based on provided parameters.
+     *
+     * @param array $params The parameters to filter and sort the list of JiraProjectCategories.
+     * @return LengthAwarePaginator The paginated list of JiraProjectCategory objects.
+     * @throws BadRequestException
+     * @throws UnprocessableException
+     * @throws JsonException
+     */
     public function index(array $params): LengthAwarePaginator
     {
-        $users = $this->process($params);
+        $jiraProjectCategory = $this->process($params);
         return $this->jiraProjectCategoryRepository->findByParams(
-            $users['filter'],
-            $users['with'],
-            $users['order'],
-            $users['page']
+            $jiraProjectCategory['filter'],
+            $jiraProjectCategory['with'],
+            $jiraProjectCategory['order'],
+            $jiraProjectCategory['page']
         );
     }
 

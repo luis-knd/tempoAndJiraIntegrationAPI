@@ -155,7 +155,7 @@ abstract class BaseRepository implements RepositoryInterface
             $middle = "%" . $middle;
         }
         if ($cut_final) {
-            $middle = $middle . "%";
+            $middle .= "%";
         }
         return $middle;
     }
