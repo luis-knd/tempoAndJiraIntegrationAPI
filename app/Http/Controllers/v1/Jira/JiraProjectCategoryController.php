@@ -10,6 +10,7 @@ use App\Http\Resources\v1\Jira\JiraProjectCategoryResource;
 use App\Models\v1\Jira\JiraProjectCategory;
 use App\Services\v1\Jira\JiraProjectCategoryService;
 use Illuminate\Http\JsonResponse;
+use Illuminate\Support\Facades\Gate;
 use JsonException;
 
 class JiraProjectCategoryController extends Controller
@@ -48,9 +49,9 @@ class JiraProjectCategoryController extends Controller
 
     public function store(JiraProjectCategoryRequest $request): JsonResponse
     {
-        $category = $request->validated();
+        $project_category = $request->validated();
         return JiraProjectCategoryResource::toJsonResponse(
-            $this->jiraProjectCategoryService->make($category)
+            $this->jiraProjectCategoryService->make($project_category)
         );
     }
 
@@ -58,16 +59,16 @@ class JiraProjectCategoryController extends Controller
      *  show
      *
      * @param JiraProjectCategoryRequest $request
-     * @param JiraProjectCategory        $category
+     * @param JiraProjectCategory        $project_category
      * @return JsonResponse
      * @throws JsonException
      */
-    public function show(JiraProjectCategoryRequest $request, JiraProjectCategory $category): JsonResponse
+    public function show(JiraProjectCategoryRequest $request, JiraProjectCategory $project_category): JsonResponse
     {
         try {
             $params = $request->validated();
             return JiraProjectCategoryResource::toJsonResponse(
-                $this->jiraProjectCategoryService->load($category, $params)
+                $this->jiraProjectCategoryService->load($project_category, $params)
             );
         } catch (UnprocessableException $e) {
             $errorMessage = $e->getMessage();
@@ -79,16 +80,24 @@ class JiraProjectCategoryController extends Controller
         }
     }
 
-    public function update(JiraProjectCategoryRequest $request, JiraProjectCategory $category): JsonResponse
+    /**
+     *  update
+     *
+     * @param JiraProjectCategoryRequest $request
+     * @param JiraProjectCategory        $project_category
+     * @return \Illuminate\Http\JsonResponse
+     */
+    public function update(JiraProjectCategoryRequest $request, JiraProjectCategory $project_category): JsonResponse
     {
-        $updatedCategory = $this->jiraProjectCategoryService->update($category, $request->validated());
+        Gate::authorize('update', $project_category);
+        $updatedCategory = $this->jiraProjectCategoryService->update($project_category, $request->validated());
         return JiraProjectCategoryResource::toJsonResponse($updatedCategory);
     }
 
-    public function destroy(JiraProjectCategoryRequest $request, JiraProjectCategory $category): JsonResponse
+    public function destroy(JiraProjectCategoryRequest $request, JiraProjectCategory $project_category): JsonResponse
     {
         $request->validated();
-        $this->jiraProjectCategoryService->delete($category);
+        $this->jiraProjectCategoryService->delete($project_category);
         return jsonResponse(message: 'JiraProjectCategory deleted successfully.');
     }
 }

@@ -4,6 +4,7 @@ namespace App\Http\Requests\v1\Jira;
 
 use App\Http\Requests\BaseRequest;
 use App\Http\Requests\SanitizesInput;
+use Illuminate\Validation\Rule;
 
 class JiraProjectCategoryRequest extends BaseRequest
 {
@@ -51,7 +52,7 @@ class JiraProjectCategoryRequest extends BaseRequest
 
     private function rulesForGet(): array
     {
-        if (!$this->route('jira_issue', false)) {
+        if (!$this->route('jira_category', false)) {
             return $this->getFilterRules();
         }
         return $this->showRules();
@@ -69,7 +70,12 @@ class JiraProjectCategoryRequest extends BaseRequest
     private function rulesForPut(): array
     {
         return [
-            'name' => 'required|string|max:255|unique:jira_project_categories,name',
+            'name' => [
+                'required',
+                'string',
+                'max:255',
+                Rule::unique('jira_project_categories')->ignore($this->route('project_category'), 'jira_category_id'),
+            ],
             'description' => 'nullable|string',
         ];
     }

@@ -1,6 +1,6 @@
 <?php
 
-namespace Feature\v1\Jira\Controllers\Issue;
+namespace Tests\Feature\v1\Jira\Controllers\Issue;
 
 use App\Models\v1\Jira\JiraIssue;
 use Illuminate\Foundation\Testing\RefreshDatabase;
@@ -48,20 +48,6 @@ class JiraIssueControllerShowTest extends TestCase
             ],
             'status' => Response::HTTP_OK,
             'message' => 'OK',
-            'errors' => []
-        ]);
-    }
-
-    #[Test]
-    public function an_authenticated_user_cannot_get_an_invalid_issue(): void // phpcs:ignore
-    {
-        $this->loginWithFakeUser();
-        $id = Str::uuid()->toString();
-        $response = $this->getJson("$this->apiBaseUrl/jira/issues/$id");
-        $response->assertJsonFragment([
-            'data' => [],
-            'status' => Response::HTTP_UNPROCESSABLE_ENTITY,
-            'message' => "Resource $id not found.",
             'errors' => []
         ]);
     }

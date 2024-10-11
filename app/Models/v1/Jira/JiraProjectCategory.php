@@ -33,6 +33,7 @@ class JiraProjectCategory extends Model
     protected $table = 'jira_project_categories';
 
     protected $fillable = [
+        'id',
         'jira_category_id',
         'name',
         'description',
