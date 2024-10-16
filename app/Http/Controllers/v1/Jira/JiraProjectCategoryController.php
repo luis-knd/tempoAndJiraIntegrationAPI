@@ -50,6 +50,7 @@ class JiraProjectCategoryController extends Controller
     public function store(JiraProjectCategoryRequest $request): JsonResponse
     {
         $project_category = $request->validated();
+        Gate::authorize('create', JiraProjectCategory::class);
         return JiraProjectCategoryResource::toJsonResponse(
             $this->jiraProjectCategoryService->make($project_category)
         );
@@ -67,6 +68,7 @@ class JiraProjectCategoryController extends Controller
     {
         try {
             $params = $request->validated();
+            Gate::authorize('view', $project_category);
             return JiraProjectCategoryResource::toJsonResponse(
                 $this->jiraProjectCategoryService->load($project_category, $params)
             );
@@ -94,8 +96,16 @@ class JiraProjectCategoryController extends Controller
         return JiraProjectCategoryResource::toJsonResponse($updatedCategory);
     }
 
+    /**
+     *  destroy
+     *
+     * @param JiraProjectCategoryRequest $request
+     * @param JiraProjectCategory        $project_category
+     * @return JsonResponse
+     */
     public function destroy(JiraProjectCategoryRequest $request, JiraProjectCategory $project_category): JsonResponse
     {
+        Gate::authorize('delete', $project_category);
         $request->validated();
         $this->jiraProjectCategoryService->delete($project_category);
         return jsonResponse(message: 'JiraProjectCategory deleted successfully.');

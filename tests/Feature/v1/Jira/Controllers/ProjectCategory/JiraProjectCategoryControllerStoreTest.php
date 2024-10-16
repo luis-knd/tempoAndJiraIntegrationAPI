@@ -3,7 +3,10 @@
 namespace Tests\Feature\v1\Jira\Controllers\ProjectCategory;
 
 use App\Models\v1\Jira\JiraProjectCategory;
+use Illuminate\Auth\Access\AuthorizationException;
 use Illuminate\Foundation\Testing\RefreshDatabase;
+use Illuminate\Support\Facades\Gate;
+use Mockery;
 use PHPUnit\Framework\Attributes\Test;
 use Symfony\Component\HttpFoundation\Response;
 use Tests\TestCase;
@@ -12,10 +15,12 @@ class JiraProjectCategoryControllerStoreTest extends TestCase
 {
     use RefreshDatabase;
 
+    private string $urlPath = 'jira/project-categories';
+
     #[Test]
     public function an_unauthenticated_user_cannot_store_a_category(): void // phpcs:ignore
     {
-        $response = $this->postJson($this->apiBaseUrl . '/jira/project-categories', [
+        $response = $this->postJson("$this->apiBaseUrl/$this->urlPath", [
             'name' => 'Test Category',
             'description' => 'Test Description'
         ]);
@@ -34,7 +39,7 @@ class JiraProjectCategoryControllerStoreTest extends TestCase
             'jira_category_id' => 22
         ];
 
-        $response = $this->postJson($this->apiBaseUrl . '/jira/project-categories', $categoryData);
+        $response = $this->postJson("$this->apiBaseUrl/$this->urlPath", $categoryData);
 
         $response->assertStatus(Response::HTTP_OK);
         $response->assertJsonStructure([
@@ -53,6 +58,28 @@ class JiraProjectCategoryControllerStoreTest extends TestCase
     }
 
     #[Test]
+    public function an_authenticated_user_without_permission_cannot_store_a_project_category(): void // phpcs:ignore
+    {
+        $this->loginWithFakeUser();
+        Gate::shouldReceive('authorize')
+            ->with('create', JiraProjectCategory::class)
+            ->andThrow(AuthorizationException::class, 'This action is unauthorized.');
+        $categoryData = [
+            'name' => 'New Category',
+            'description' => 'New Description',
+            'jira_category_id' => 22
+        ];
+
+        $response = $this->postJson("$this->apiBaseUrl/$this->urlPath", $categoryData);
+
+        $response->assertStatus(Response::HTTP_UNAUTHORIZED);
+        $response->assertJsonFragment([
+            'message' => 'This action is unauthorized.',
+            'errors' => []
+        ]);
+    }
+
+    #[Test]
     public function it_returns_validation_errors_for_invalid_data(): void // phpcs:ignore
     {
         $this->loginWithFakeUser();
@@ -61,7 +88,7 @@ class JiraProjectCategoryControllerStoreTest extends TestCase
             'jira_category_id' => null,
         ];
 
-        $response = $this->postJson($this->apiBaseUrl . '/jira/project-categories', $invalidData);
+        $response = $this->postJson("$this->apiBaseUrl/$this->urlPath", $invalidData);
 
         $response->assertStatus(Response::HTTP_UNPROCESSABLE_ENTITY);
         $response->assertJsonValidationErrors(['name', 'jira_category_id']);
@@ -73,7 +100,7 @@ class JiraProjectCategoryControllerStoreTest extends TestCase
         $this->loginWithFakeUser();
         JiraProjectCategory::factory()->create(['name' => 'Existing Category']);
 
-        $response = $this->postJson($this->apiBaseUrl . '/jira/project-categories', [
+        $response = $this->postJson("$this->apiBaseUrl/$this->urlPath", [
             'name' => 'Existing Category',
             'description' => 'New Description',
             'jira_category_id' => 22,
@@ -89,7 +116,7 @@ class JiraProjectCategoryControllerStoreTest extends TestCase
         $this->loginWithFakeUser();
         JiraProjectCategory::factory()->create(['jira_category_id' => 22]);
 
-        $response = $this->postJson($this->apiBaseUrl . '/jira/project-categories', [
+        $response = $this->postJson("$this->apiBaseUrl/$this->urlPath", [
             'name' => 'Existing Category',
             'description' => 'New Description',
             'jira_category_id' => 22,
@@ -109,7 +136,7 @@ class JiraProjectCategoryControllerStoreTest extends TestCase
             'jira_category_id' => 22,
         ];
 
-        $response = $this->postJson($this->apiBaseUrl . '/jira/project-categories', $categoryData);
+        $response = $this->postJson("$this->apiBaseUrl/$this->urlPath", $categoryData);
 
         $response->assertStatus(Response::HTTP_OK);
         $this->assertDatabaseHas('jira_project_categories', [
@@ -127,7 +154,7 @@ class JiraProjectCategoryControllerStoreTest extends TestCase
             'jira_category_id' => 22,
         ];
 
-        $response = $this->postJson($this->apiBaseUrl . '/jira/project-categories', $categoryData);
+        $response = $this->postJson("$this->apiBaseUrl/$this->urlPath", $categoryData);
 
         $response->assertStatus(Response::HTTP_OK);
         $this->assertDatabaseHas('jira_project_categories', [
@@ -145,7 +172,7 @@ class JiraProjectCategoryControllerStoreTest extends TestCase
             'jira_category_id' => 22
         ];
 
-        $response = $this->postJson($this->apiBaseUrl . '/jira/project-categories', $categoryData);
+        $response = $this->postJson("$this->apiBaseUrl/$this->urlPath", $categoryData);
 
         $response->assertStatus(Response::HTTP_OK);
         $this->assertDatabaseHas('jira_project_categories', $categoryData);
@@ -161,7 +188,7 @@ class JiraProjectCategoryControllerStoreTest extends TestCase
             'jira_category_id' => 22,
         ];
 
-        $response = $this->postJson($this->apiBaseUrl . '/jira/project-categories', $categoryData);
+        $response = $this->postJson("$this->apiBaseUrl/$this->urlPath", $categoryData);
 
         $response->assertStatus(Response::HTTP_OK);
         $this->assertDatabaseHas('jira_project_categories', [
@@ -180,7 +207,7 @@ class JiraProjectCategoryControllerStoreTest extends TestCase
             'jira_category_id' => 22,
         ];
 
-        $response = $this->postJson($this->apiBaseUrl . '/jira/project-categories', $categoryData);
+        $response = $this->postJson("$this->apiBaseUrl/$this->urlPath", $categoryData);
 
         $response->assertStatus(Response::HTTP_OK);
         $this->assertDatabaseHas('jira_project_categories', $categoryData);
