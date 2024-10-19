@@ -69,7 +69,7 @@ class JiraUserController extends Controller
      * @param JiraUserRequest $request
      * @param JiraUser        $jiraUser
      * @return JsonResponse
-     * @throws \JsonException
+     * @throws JsonException
      */
     public function show(JiraUserRequest $request, JiraUser $jiraUser): JsonResponse
     {

@@ -13,7 +13,6 @@ use Illuminate\Http\JsonResponse;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Gate;
 use JsonException;
-use Symfony\Component\HttpFoundation\Response;
 
 /**
  * Class UserController

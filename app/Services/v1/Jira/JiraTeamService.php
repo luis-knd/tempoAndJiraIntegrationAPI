@@ -7,13 +7,14 @@ use App\Models\v1\Jira\JiraTeam;
 use App\Repository\Interfaces\v1\Jira\JiraTeamRepositoryInterface;
 use App\Services\ProcessParamsTraits;
 use Illuminate\Contracts\Pagination\LengthAwarePaginator;
+use JsonException;
 
 /**
  * Class JiraTeamService
  *
- * @package App\Services\v1\Jira
+ * @package   App\Services\v1\Jira
  * @copyright 08-2024 Lcandesign
- * @author Luis Candelario <lcandelario@lcandesign.com>
+ * @author    Luis Candelario <lcandelario@lcandesign.com>
  */
 class JiraTeamService
 {
@@ -24,7 +25,12 @@ class JiraTeamService
     }
 
     /**
+     *  index
+     *
+     * @param array $params
+     * @return LengthAwarePaginator
      * @throws UnprocessableException
+     * @throws JsonException
      */
     public function index(array $params): LengthAwarePaginator
     {
@@ -52,7 +58,13 @@ class JiraTeamService
     }
 
     /**
+     *  load
+     *
+     * @param JiraTeam $team
+     * @param array    $params
+     * @return JiraTeam
      * @throws UnprocessableException
+     * @throws JsonException
      */
     public function load(JiraTeam $team, array $params = []): JiraTeam
     {

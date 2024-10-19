@@ -31,11 +31,11 @@ class SortRule implements ValidationRule
      */
     public function validate(string $attribute, mixed $value, Closure $fail): void
     {
-        $fields = array_map(function ($item) {
-            return str_replace("+", "", str_replace("-", "", $item));
+        $fields = array_map(static function ($item) {
+            return str_replace(array("-", "+"), "", $item);
         }, explode(",", $value));
         foreach ($fields as $field) {
-            if (!in_array($field, $this->sortFields)) {
+            if (!in_array($field, $this->sortFields, true)) {
                 $fail(__('The :field is present in :attribute param but is not available for sort', [
                     'field' => $field,
                     'attribute' => $attribute,

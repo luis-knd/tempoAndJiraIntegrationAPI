@@ -11,6 +11,7 @@ use App\Models\v1\Jira\JiraProject;
 use App\Services\v1\Jira\JiraProjectService;
 use Illuminate\Http\JsonResponse;
 use Illuminate\Support\Facades\Gate;
+use JsonException;
 
 /**
  * Class JiraProjectController
@@ -32,8 +33,9 @@ class JiraProjectController extends Controller
      *  index
      *
      * @param JiraProjectRequest $request
-     * @return \Illuminate\Http\JsonResponse
-     * @throws \App\Exceptions\UnprocessableException
+     * @return JsonResponse
+     * @throws UnprocessableException
+     * @throws JsonException
      */
     public function index(JiraProjectRequest $request): JsonResponse
     {
@@ -52,7 +54,7 @@ class JiraProjectController extends Controller
     }
 
     /**
-     *  show
+     * show
      *
      * Handles the HTTP request to display a Jira project.
      *
@@ -60,6 +62,7 @@ class JiraProjectController extends Controller
      * @param JiraProject        $jiraProject
      * @return JsonResponse
      * @throws UnprocessableException
+     * @throws JsonException
      */
     public function show(JiraProjectRequest $request, JiraProject $jiraProject): JsonResponse
     {

@@ -10,6 +10,7 @@ use Illuminate\Support\Facades\Hash;
 use Illuminate\Support\Facades\Password;
 use Illuminate\Support\Str;
 use Symfony\Component\HttpFoundation\Response;
+use Tymon\JWTAuth\JWTGuard;
 
 /**
  * Class AuthService
@@ -24,14 +25,16 @@ class AuthService
     {
         $credentials = request(['email', 'password']);
 
-        //@phpstan-ignore-next-line
-        if (!$token = auth()->attempt($credentials)) {
+        /** @var JWTGuard $auth */
+        $auth = auth();
+
+        if (!$token = $auth->attempt($credentials)) {
             return jsonResponse(status: Response::HTTP_UNAUTHORIZED, message: 'Unauthorized');
         }
 
         return jsonResponse(data: [
             'token' => $token,
-            'expires_in' => auth()->factory()->getTTL() * 60 //@phpstan-ignore-line
+            'expires_in' => $auth->factory()->getTTL() * 60
         ]);
     }
 
@@ -81,7 +84,7 @@ class AuthService
     {
         $status = Password::reset(
             request()->only('email', 'password', 'password_confirmation', 'token'),
-            function ($user, $password) {
+            static function ($user, $password) {
                 $user->forceFill(['password' => Hash::make($password)])->save();
                 $user->setRememberToken(Str::random(60));
                 $user->notify(new ResetPasswordNotification($password));

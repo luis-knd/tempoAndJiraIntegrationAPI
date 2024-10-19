@@ -2,6 +2,7 @@
 
 namespace App\Http\Controllers\v1\Jira;
 
+use App\Exceptions\BadRequestException;
 use App\Exceptions\UnprocessableException;
 use App\Http\Controllers\Controller;
 use App\Http\Requests\v1\Jira\JiraProjectCategoryRequest;
@@ -25,10 +26,9 @@ class JiraProjectCategoryController extends Controller
     /**
      *  index
      *
-     * @param \App\Http\Requests\v1\Jira\JiraProjectCategoryRequest $request
-     * @return \Illuminate\Http\JsonResponse
-     * @throws \App\Exceptions\BadRequestException
-     * @throws \JsonException
+     * @param JiraProjectCategoryRequest $request
+     * @return JsonResponse
+     * @throws BadRequestException
      */
     public function index(JiraProjectCategoryRequest $request): JsonResponse
     {
@@ -37,7 +37,7 @@ class JiraProjectCategoryController extends Controller
             $paginator = $this->jiraProjectCategoryService->index($params);
             $categories = new JiraProjectCategoryCollection($paginator);
             return jsonResponse(data: $categories);
-        } catch (UnprocessableException $e) {
+        } catch (UnprocessableException | JsonException $e) {
             $errorMessage = $e->getMessage();
             return jsonResponse(
                 status: $e->getCode(),
@@ -87,7 +87,7 @@ class JiraProjectCategoryController extends Controller
      *
      * @param JiraProjectCategoryRequest $request
      * @param JiraProjectCategory        $project_category
-     * @return \Illuminate\Http\JsonResponse
+     * @return JsonResponse
      */
     public function update(JiraProjectCategoryRequest $request, JiraProjectCategory $project_category): JsonResponse
     {

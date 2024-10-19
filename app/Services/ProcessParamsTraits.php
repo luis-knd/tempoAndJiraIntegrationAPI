@@ -4,6 +4,7 @@ namespace App\Services;
 
 use App\Exceptions\UnprocessableException;
 use DateTime;
+use Exception;
 use JsonException;
 use Symfony\Component\HttpFoundation\Response;
 
@@ -182,7 +183,7 @@ trait ProcessParamsTraits
         $values = explode(',', $input);
         $numericValues = array_filter($values, 'is_numeric');
 
-        if (count($values) === count($numericValues) && !in_array($field, ['code', 'name'])) {
+        if (!in_array($field, ['code', 'name']) && count($values) === count($numericValues)) {
             $values = json_decode('[' . implode(',', $numericValues) . ']', false, 512, JSON_THROW_ON_ERROR);
         }
 
@@ -215,24 +216,6 @@ trait ProcessParamsTraits
     }
 
     /**
-     * Converts a camel case string to snake case.
-     *
-     * @param string $camelCaseString The camel case string to convert.
-     * @param string $separator       The separator to use between words in the snake case string. Default is '_'.
-     * @return string The converted snake case string.
-     */
-    private function camelCaseToSnake(string $camelCaseString, string $separator = '_'): string
-    {
-        $pattern = '!([A-Z][A-Z0-9]*(?=$|[A-Z][a-z0-9])|[A-Za-z][a-z0-9]+)!';
-        preg_match_all($pattern, $camelCaseString, $matches);
-        //@phpstan-ignore-next-line
-        $snakeCaseParts = array_map(function ($match) use ($separator) {
-            return strtolower($match == strtoupper($match) ? $match : lcfirst($match));
-        }, $matches[0]);
-        return implode($separator, $snakeCaseParts);
-    }
-
-    /**
      * Validates if the given input date is in a valid format.
      *
      * @param string $date   The date to validate.
@@ -249,8 +232,8 @@ trait ProcessParamsTraits
      * Normalises the given value. If the value represents a date, it will be converted to a DateTime object.
      *
      * @param string $value The value to normalise.
-     * @return string|\DateTime The normalised value.
-     * @throws \Exception
+     * @return string|DateTime The normalised value.
+     * @throws Exception
      */
     private function normalise(string $value): string|DateTime
     {

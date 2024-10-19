@@ -34,7 +34,7 @@ class FieldsRule implements ValidationRule
     {
         $fields = explode(",", $value);
         foreach ($fields as $field) {
-            if (!in_array($field, $this->attributes)) {
+            if (!in_array($field, $this->attributes, true)) {
                 $fail(__('The :field is present in :attribute param but is not available for include', [
                     'field' => $field,
                     'attribute' => $attribute,

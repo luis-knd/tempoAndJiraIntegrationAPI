@@ -4,3 +4,9 @@ profile:
   name: qodana.recommended
 include:
   - name: CheckDependencyLicenses
+  - name: PhpCoverageInspection
+  - name: VulnerableLibrariesLocal
+  - name: DuplicatedCode
+  - name: InjectedReferences
+  - name: LicenseAudit
+

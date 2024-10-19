@@ -25,10 +25,10 @@ class JiraIssueRepository extends BaseRepository implements JiraIssueRepositoryI
     protected function proxyFilters(
         array &$params,
         Model|Builder $query
-    ): Model|Builder {
+    ): Builder {
         $jiraProjectsParams = $this->extractParams('jiraProjects', $params);
         if ($jiraProjectsParams) {
-            $query = $query->whereHas('jiraProjects', function ($query) use ($jiraProjectsParams) {
+            $query->whereHas('jiraProjects', function ($query) use ($jiraProjectsParams) {
                 foreach ($jiraProjectsParams as $param) {
                     $this->processParam(
                         $query,

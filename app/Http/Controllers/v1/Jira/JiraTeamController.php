@@ -9,8 +9,10 @@ use App\Http\Resources\v1\Jira\JiraTeamCollection;
 use App\Http\Resources\v1\Jira\JiraTeamResource;
 use App\Models\v1\Jira\JiraTeam;
 use App\Services\v1\Jira\JiraTeamService;
+use Exception;
 use Illuminate\Http\JsonResponse;
 use Illuminate\Support\Facades\Gate;
+use JsonException;
 
 /**
  * Class JiraTeamController
@@ -33,7 +35,6 @@ class JiraTeamController extends Controller
      *
      * @param JiraTeamRequest $request
      * @return JsonResponse
-     *
      */
     public function index(JiraTeamRequest $request): JsonResponse
     {
@@ -43,7 +44,7 @@ class JiraTeamController extends Controller
 
             $jiraTeams = new JiraTeamCollection($paginator);
             return jsonResponse(data: $jiraTeams);
-        } catch (UnprocessableException $e) {
+        } catch (UnprocessableException | JsonException | Exception $e) {
             $errorMessage = $e->getMessage();
             return jsonResponse(
                 status: $e->getCode(),
@@ -66,7 +67,6 @@ class JiraTeamController extends Controller
      * @param JiraTeamRequest $request
      * @param JiraTeam        $jiraTeam
      * @return JsonResponse
-     *
      */
     public function show(JiraTeamRequest $request, JiraTeam $jiraTeam): JsonResponse
     {
@@ -75,7 +75,7 @@ class JiraTeamController extends Controller
             Gate::authorize('view', $jiraTeam);
             $team = $this->jiraTeamService->load($jiraTeam, $params);
             return JiraTeamResource::toJsonResponse($team);
-        } catch (UnprocessableException $e) {
+        } catch (UnprocessableException | JsonException $e) {
             $errorMessage = $e->getMessage();
             return jsonResponse(
                 status: $e->getCode(),

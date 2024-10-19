@@ -71,7 +71,7 @@ trait SanitizesInput
             $value = preg_replace('/<script\b[^>]*>(.*?)<\/script>/is', '', $value);
             $value = strip_tags($value);
             $value = preg_replace('/<\?php.*?\?>/is', '', $value);
-            return preg_replace('/alert\s*$$[^)]*$$/i', '', $value);
+            return preg_replace('/alert\s*\$\$[^)]*\$\$/i', '', $value);
         }
 
         return $value;

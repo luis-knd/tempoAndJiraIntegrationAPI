@@ -37,7 +37,7 @@
 
         <script type="text/javascript">
             window.onload = function() {
-                const ui = SwaggerUIBundle({
+                window.ui = SwaggerUIBundle({
                     url: "{!! $urlToDocs !!}",
                     dom_id: '#swagger-ui',
                     deepLinking: true,
@@ -50,8 +50,6 @@
                     ],
                     layout: "StandaloneLayout"
                 });
-
-                window.ui = ui;
             }
         </script>
     </body>

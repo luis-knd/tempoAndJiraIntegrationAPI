@@ -6,7 +6,6 @@ use App\Http\Requests\BaseRequest;
 use App\Http\Requests\SanitizesInput;
 use App\Rules\Auth\CheckPasswordRule;
 use Illuminate\Contracts\Validation\ValidationRule;
-use Illuminate\Support\Facades\Auth;
 
 class LoginRequest extends BaseRequest
 {

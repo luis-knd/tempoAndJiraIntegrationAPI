@@ -5,6 +5,7 @@ namespace App\Models\v1\Jira;
 use Illuminate\Database\Eloquent\Concerns\HasUuids;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
+use Illuminate\Database\Eloquent\Relations\BelongsTo;
 use Illuminate\Database\Eloquent\Relations\HasMany;
 
 /**
@@ -42,7 +43,7 @@ class JiraProject extends Model
         return $this->hasMany(JiraIssue::class, 'jira_project_id', 'jira_project_id');
     }
 
-    public function jiraProjectCategory()
+    public function jiraProjectCategory(): BelongsTo
     {
         return $this->belongsTo(JiraProjectCategory::class, 'jira_project_category_id', 'jira_category_id');
     }

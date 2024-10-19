@@ -7,6 +7,7 @@ use App\Models\v1\Jira\JiraProject;
 use App\Repository\Interfaces\v1\Jira\JiraProjectRepositoryInterface;
 use App\Services\ProcessParamsTraits;
 use Illuminate\Contracts\Pagination\LengthAwarePaginator;
+use JsonException;
 
 /**
  * Class JiraProjectService
@@ -29,6 +30,7 @@ class JiraProjectService
      * @param array $params
      * @return LengthAwarePaginator
      * @throws UnprocessableException
+     * @throws JsonException
      */
     public function index(array $params): LengthAwarePaginator
     {
@@ -58,12 +60,13 @@ class JiraProjectService
     }
 
     /**
-     *  load
+     * load
      *
      * @param JiraProject $jiraProject
      * @param array       $params
      * @return JiraProject
      * @throws UnprocessableException
+     * @throws JsonException
      */
     public function load(JiraProject $jiraProject, array $params = []): JiraProject
     {

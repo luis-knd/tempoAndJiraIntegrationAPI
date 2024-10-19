@@ -12,6 +12,7 @@ utilizes SOLID design patterns, and is built with modularity and scalability in 
 - [Project Setup](#project-setup)
 - [Pre Commit Configuration](#pre-commit-configuration)
 - [Run Tests](#run-tests)
+- [GitHub Actions](#github-actions)
 - [Documentation](#documentation)
 - [Troubleshooting](#troubleshooting)
 
@@ -130,6 +131,12 @@ docker-compose run --rm artisan test
 ```
 ![Test Coverage](resources/images/testCoverage.png)
 
+
+### GitHub Actions
+
+All push to the main branch, will need to pass the [Qodana scan](https://www.jetbrains.com/help/qodana/getting-started.html).
+Apply to the Pull Request too.
+![img.png](resources/images/qodana_code_quality.png)
 
 ### Documentation
 This API use Swagger specifically this [library](https://scramble.dedoc.co/). To see the documentation,

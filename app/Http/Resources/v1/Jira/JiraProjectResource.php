@@ -4,7 +4,6 @@ namespace App\Http\Resources\v1\Jira;
 
 use App\Http\Resources\FieldsResourceTraits;
 use App\Models\v1\Jira\JiraProject;
-use App\Models\v1\Jira\JiraProjectCategory;
 use Illuminate\Http\JsonResponse;
 use Illuminate\Http\Request;
 use Illuminate\Http\Resources\Json\JsonResource;

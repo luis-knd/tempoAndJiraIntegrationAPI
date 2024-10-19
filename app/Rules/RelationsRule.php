@@ -33,7 +33,7 @@ class RelationsRule implements ValidationRule
     {
         $fields = explode(",", $value);
         foreach ($fields as $field) {
-            if (!in_array($field, $this->relations)) {
+            if (!in_array($field, $this->relations, true)) {
                 $fail(__('The :field is present in :attribute param but is not available hydration', [
                     'field' => $field,
                     'attribute' => $attribute,

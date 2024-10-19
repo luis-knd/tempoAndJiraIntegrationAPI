@@ -45,7 +45,7 @@ class JiraIssue extends Model
 
     protected $with = ['jiraProjects'];
 
-    public function jiraProjects()
+    public function jiraProjects(): BelongsTo
     {
         return $this->belongsTo(JiraProject::class, 'jira_project_id', 'jira_project_id');
     }

@@ -71,14 +71,21 @@ class JiraApiService implements JiraApiServiceInterface
         }
     }
 
+    /**
+     *  fetchIssueWorklogs
+     *
+     * @param string $issueKey
+     * @return array
+     * @throws GuzzleException
+     */
     public function fetchIssueWorklogs(string $issueKey): array
     {
         try {
-            $response = $this->client->get("/rest/api/3/issue/{$issueKey}/worklog");
+            $response = $this->client->get("/rest/api/3/issue/$issueKey/worklog");
             $data = json_decode($response->getBody()->getContents(), true, 512, JSON_THROW_ON_ERROR);
             return $data['worklogs'] ?? [];
         } catch (Exception $e) {
-            Log::error(sprintf("Error fetching worklogs for issue {$issueKey}: %s", $e->getMessage()));
+            Log::error(sprintf("Error fetching worklogs for issue $issueKey: %s", $e->getMessage()));
             return [];
         }
     }

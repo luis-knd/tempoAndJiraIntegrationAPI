@@ -9,7 +9,6 @@ use App\Rules\Auth\CheckPasswordRule;
 use App\Services\v1\Auth\AuthService;
 use Illuminate\Http\JsonResponse;
 use Illuminate\Http\Request;
-use Symfony\Component\HttpFoundation\Response;
 
 /**
  * Handles authentication-related actions.

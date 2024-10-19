@@ -25,9 +25,6 @@ class UserRequest extends BaseRequest
         'email' => ['rules' => ['email']]
     ];
 
-    protected array $relations = [];
-    protected array $proxyFilters = [];
-
     /**
      * Determine if the user is authorized to make this request.
      */

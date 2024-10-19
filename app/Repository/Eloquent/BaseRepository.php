@@ -36,11 +36,16 @@ abstract class BaseRepository implements RepositoryInterface
     }
 
     /**
-     * @throws \App\Exceptions\BadRequestException
+     * findOneBy
+     *
+     * @param $params
+     * @param mixed $with
+     * @return Model|null
+     * @throws BadRequestException
      */
-    public function findOneBy($params, $with = []): ?Model
+    public function findOneBy($params, mixed $with = []): ?Model
     {
-        $params = array_map(function ($param) {
+        $params = array_map(static function ($param) {
             if (count($param) === 2 && !is_array($param[1])) {
                 return [$param[0], [$param[1]]];
             }
@@ -62,8 +67,8 @@ abstract class BaseRepository implements RepositoryInterface
      * @param array $with The relationships to eager load.
      * @param array $order The fields to order by and their direction.
      * @param array $page The pagination parameters.
-     * @return \Illuminate\Contracts\Pagination\LengthAwarePaginator|\Illuminate\Support\Collection
-     * @throws \App\Exceptions\BadRequestException If a parameter has an invalid structure.
+     * @return LengthAwarePaginator|Collection
+     * @throws BadRequestException If a parameter has an invalid structure.
      */
     public function findByParams(
         $params,
@@ -109,37 +114,37 @@ abstract class BaseRepository implements RepositoryInterface
      * @param string $key The key for the parameter.
      * @param array|string|null $values The value(s) for the parameter.
      * @param string $operator The comparison operator (default is '=').
-     * @return Builder|Model The modified query builder or model instance.
+     * @return Builder The modified query builder instance.
      */
     protected function processParam(
         Builder|Model $query,
         string $key,
         array|string|null $values,
         string $operator = '='
-    ): Builder|Model {
+    ): Builder {
         if (!is_array($values)) {
             $values = [$values];
         }
         foreach ($values as $value) {
             if ($operator === 'IN') {
-                $query = $query->whereIn($key, $values);
+                $query->whereIn($key, $values);
             } elseif ($operator === 'NOT IN') {
-                $query = $query->whereNotIn($key, $values);
+                $query->whereNotIn($key, $values);
             } elseif ($value instanceof DateTime) {
-                $query = $query->whereDate($key, $operator, $value);
+                $query->whereDate($key, $operator, $value);
             } elseif (($value === '' || $value === null) && $operator === '=') {
-                $query = $query->where(function (Builder|Model $query) use ($key, $value) {
+                $query->where(function (Builder|Model $query) use ($key, $value) {
                     $query->whereNull($key)->orWhere($key, $value);
                 });
             } elseif (($value === '' || $value === null) && $operator === '!=') {
-                $query = $query->where(function (Builder|Model $query) use ($key, $value) {
+                $query->where(function (Builder|Model $query) use ($key, $value) {
                     $query->whereNotNull($key)->orWhere($key, '!=', $value);
                 });
             } elseif ($operator === 'like') {
                 $value = $this->scapeWildcards($value);
-                $query = $query->where($key, $operator, $value);
+                $query->where($key, $operator, $value);
             } else {
-                $query = $query->where($key, $operator, $value);
+                $query->where($key, $operator, $value);
             }
         }
         return $query;
