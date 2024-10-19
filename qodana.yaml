@@ -5,8 +5,11 @@ profile:
 include:
   - name: CheckDependencyLicenses
   - name: PhpCoverageInspection
+  - name: PhpUnitTestFailedLineInspection
   - name: VulnerableLibrariesLocal
   - name: DuplicatedCode
   - name: InjectedReferences
   - name: LicenseAudit
+exclude:
+  - name: PhpDisabledQualityToolComposerInspection
 
