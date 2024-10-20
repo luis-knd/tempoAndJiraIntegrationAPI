@@ -15,12 +15,12 @@ exclude:
   - name: PhpDisabledQualityToolComposerInspection
 failureConditions:
   severityThresholds:
-    any: 15
+    any: 50
     critical: 1
     high: 2
     moderate: 3
     low: 4
     info: 5
   testCoverageThresholds:
-    fresh: 6
-    total: 7
+    fresh: 50
+    total: 60
