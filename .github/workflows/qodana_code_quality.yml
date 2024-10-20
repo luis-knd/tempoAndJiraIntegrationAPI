@@ -57,6 +57,9 @@ jobs:
         with:
           files: coverage.xml
 
+      - name: Move coverage report
+        run: mkdir -p .qodana/code-coverage && mv coverage.xml .qodana/code-coverage
+
       - name: 'Qodana Scan'
         uses: JetBrains/qodana-action@v2024.1
         with:
