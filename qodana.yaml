@@ -3,13 +3,24 @@ linter: jetbrains/qodana-php:2024.1
 profile:
   name: qodana.recommended
 include:
-  - name: CheckDependencyLicenses
   - name: PhpCoverageInspection
   - name: PhpUnitTestFailedLineInspection
   - name: VulnerableLibrariesLocal
   - name: DuplicatedCode
   - name: InjectedReferences
   - name: LicenseAudit
+  - name: PhpVulnerablePathsInspection
 exclude:
   - name: PhpDisabledQualityToolComposerInspection
-
+  - name: CheckDependencyLicenses
+failureConditions:
+  severityThresholds:
+    any: 15
+    critical: 1
+    high: 2
+    moderate: 3
+    low: 4
+    info: 5
+  testCoverageThresholds:
+    fresh: 6
+    total: 7
