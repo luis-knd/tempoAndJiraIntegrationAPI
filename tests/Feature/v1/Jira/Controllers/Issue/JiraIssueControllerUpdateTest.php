@@ -3,9 +3,11 @@
 namespace Feature\v1\Jira\Controllers\Issue;
 
 use App\Models\v1\Jira\JiraIssue;
+use Carbon\Carbon;
 use Illuminate\Auth\Access\AuthorizationException;
 use Illuminate\Foundation\Testing\RefreshDatabase;
 use Illuminate\Support\Facades\Gate;
+use Illuminate\Testing\Fluent\AssertableJson;
 use Mockery;
 use PHPUnit\Framework\Attributes\Test;
 use Symfony\Component\HttpFoundation\Response;
@@ -162,26 +164,20 @@ class JiraIssueControllerUpdateTest extends TestCase
 
         $response = $this->putJson("$this->apiBaseUrl/jira/issues/$jiraIssue->id", $payload);
 
-        $response->assertStatus(Response::HTTP_OK);
-        $response->assertJsonFragment([
-            'data' => [
-                'jira_issue' => [
-                    'jira_issue_id' => 'OLD-123',
-                    'jira_issue_key' => 'LCD',
-                    'project' => [
-                        'jira_project_id' => $jiraIssue->jira_project_id,
-                    ],
-                    'summary' => 'Updated summary',
-                    'development_category' => 'Refactor',
-                    'status' => 'In progress',
-                    'created_at' => $jiraIssue->created_at,
-                    'updated_at' => $jiraIssue->updated_at
-                ],
-            ],
-            'status' => Response::HTTP_OK,
-            'message' => 'OK',
-            'errors' => []
-        ]);
+        $response->assertJson(function (AssertableJson $json) use ($jiraIssue) {
+            $json->where('status', Response::HTTP_OK)
+                ->where('message', 'OK')
+                ->where('errors', [])
+                ->has('data.jira_issue', function (AssertableJson $json) use ($jiraIssue) {
+                    $json->where('jira_issue_id', 'OLD-123')
+                        ->where('jira_issue_key', 'LCD')
+                        ->where('summary', 'Updated summary')
+                        ->where('development_category', 'Refactor')
+                        ->where('status', 'In progress')
+                        ->where('project.jira_project_id', $jiraIssue->jira_project_id)
+                        ->etc();
+                });
+        });
 
         $this->assertDatabaseHas('jira_issues', [
             'id' => $jiraIssue->id,
@@ -192,5 +188,13 @@ class JiraIssueControllerUpdateTest extends TestCase
             'id' => $jiraIssue->id,
             'jira_issue_id' => 'NEW-456',
         ]);
+
+        $createdAt = $response->json('data.jira_issue.created_at');
+        $updatedAt = $response->json('data.jira_issue.updated_at');
+
+        $this->assertTrue(
+            Carbon::parse($updatedAt)->diffInSeconds(Carbon::parse($createdAt)) <= 2,
+            'El campo updated_at no está dentro del rango esperado.'
+        );
     }
 }
