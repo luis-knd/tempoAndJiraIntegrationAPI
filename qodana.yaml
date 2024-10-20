@@ -10,9 +10,9 @@ include:
   - name: InjectedReferences
   - name: LicenseAudit
   - name: PhpVulnerablePathsInspection
+  - name: CheckDependencyLicenses
 exclude:
   - name: PhpDisabledQualityToolComposerInspection
-  - name: CheckDependencyLicenses
 failureConditions:
   severityThresholds:
     any: 15
