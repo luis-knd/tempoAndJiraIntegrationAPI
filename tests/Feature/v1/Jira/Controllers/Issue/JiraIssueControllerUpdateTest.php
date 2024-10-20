@@ -147,6 +147,7 @@ class JiraIssueControllerUpdateTest extends TestCase
     public function an_authenticated_user_cannot_update_the_jira_issue_id_and_jira_issue_key(): void // phpcs:ignore
     {
         $this->loginWithFakeUser();
+        /** @var JiraIssue $jiraIssue */
         $jiraIssue = JiraIssue::factory()->create([
             'jira_issue_id' => 'OLD-123',
             'jira_issue_key' => 'LCD',
@@ -159,7 +160,6 @@ class JiraIssueControllerUpdateTest extends TestCase
             'status' => 'In progress',
         ];
 
-        // @phpstan-ignore-next-line
         $response = $this->putJson("$this->apiBaseUrl/jira/issues/$jiraIssue->id", $payload);
 
         $response->assertStatus(Response::HTTP_OK);
@@ -169,13 +169,13 @@ class JiraIssueControllerUpdateTest extends TestCase
                     'jira_issue_id' => 'OLD-123',
                     'jira_issue_key' => 'LCD',
                     'project' => [
-                        'jira_project_id' => $jiraIssue->jira_project_id, // @phpstan-ignore-line
+                        'jira_project_id' => $jiraIssue->jira_project_id,
                     ],
                     'summary' => 'Updated summary',
                     'development_category' => 'Refactor',
                     'status' => 'In progress',
-                    'created_at' => $jiraIssue->created_at, // @phpstan-ignore-line
-                    'updated_at' => $jiraIssue->updated_at // @phpstan-ignore-line
+                    'created_at' => $jiraIssue->created_at,
+                    'updated_at' => $jiraIssue->updated_at
                 ],
             ],
             'status' => Response::HTTP_OK,
@@ -184,12 +184,12 @@ class JiraIssueControllerUpdateTest extends TestCase
         ]);
 
         $this->assertDatabaseHas('jira_issues', [
-            'id' => $jiraIssue->id, // @phpstan-ignore-line
+            'id' => $jiraIssue->id,
             'jira_issue_id' => 'OLD-123',
         ]);
 
         $this->assertDatabaseMissing('jira_issues', [
-            'id' => $jiraIssue->id, // @phpstan-ignore-line
+            'id' => $jiraIssue->id,
             'jira_issue_id' => 'NEW-456',
         ]);
     }
