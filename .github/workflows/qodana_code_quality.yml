@@ -44,6 +44,9 @@ jobs:
       - name: Instalar dependencias
         run: composer install --no-interaction --prefer-dist --optimize-autoloader
 
+      - name: Crear archivo .env
+        run: cp .env.example .env
+
       - name: Generar clave de aplicación
         run: php artisan key:generate
 

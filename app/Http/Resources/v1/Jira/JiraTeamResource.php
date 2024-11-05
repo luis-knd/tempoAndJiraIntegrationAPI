@@ -19,6 +19,8 @@ use Illuminate\Http\Resources\Json\JsonResource;
  * @property mixed $jira_team_id
  * @property mixed $name
  * @property mixed $jiraUsers
+ * @property mixed $created_at
+ * @property mixed $updated_at
  * @method relationLoaded(string $string)
  */
 class JiraTeamResource extends JsonResource
@@ -48,6 +50,8 @@ class JiraTeamResource extends JsonResource
         $response = [
             'jira_team_id' => $this->when($this->include('jira_team_id'), $this->jira_team_id),
             'name' => $this->when($this->include('name'), $this->name),
+            'created_at' => $this->when($this->include('created_at'), $this->created_at),
+            'updated_at' => $this->when($this->include('updated_at'), $this->updated_at)
         ];
 
         if ($this->relationLoaded('jiraUsers')) {
