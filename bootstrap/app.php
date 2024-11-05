@@ -42,14 +42,14 @@ return Application::configure(basePath: dirname(__DIR__))
                 );
             });
             $exceptions->render(function (NotFoundHttpException $throwable) {
-                $pattern = '/\b([a-f0-9\-]{36}|\d+)\b/';
-                $resourseNotFounded = '';
+                $pattern = '/\b([a-f0-9]{8}-[a-f0-9]{4}-[a-f0-9]{4}-[a-f0-9]{4}-[a-f0-9]{12}|\d+|[a-zA-Z0-9_-]+)\b$/';
+                $resourceNotFounded = '';
                 if (preg_match($pattern, $throwable->getMessage(), $matches)) {
-                    $resourseNotFounded = $matches[1];
+                    $resourceNotFounded = $matches[1];
                 }
                 return jsonResponse(
                     status: Response::HTTP_UNPROCESSABLE_ENTITY,
-                    message: "Resource $resourseNotFounded not found."
+                    message: "Resource $resourceNotFounded not found."
                 );
             });
             $exceptions->render(function (JsonException $throwable) {

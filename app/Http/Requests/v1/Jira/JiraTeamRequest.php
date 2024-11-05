@@ -25,9 +25,9 @@ class JiraTeamRequest extends BaseRequest
     }
 
     protected array $publicAttributes = [
-        'id' => ['rules' => ['uuid']],
-        'jira_team_id' => ['rules' => ['required', 'uuid', 'unique:jira_teams,jira_team_id']],
-        'name' => ['rules' => ['required', 'string', 'max:255']],
+        'id' => ['uuid'],
+        'jira_team_id' => ['required', 'uuid', 'unique:jira_teams,jira_team_id'],
+        'name' => ['required', 'string', 'max:255'],
     ];
 
     protected array $relations = [

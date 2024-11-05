@@ -17,6 +17,8 @@ use Illuminate\Database\Eloquent\Relations\BelongsToMany;
  * @property mixed $id
  * @property mixed $jira_team_id
  * @property mixed $name
+ * @property mixed $created_at
+ * @property mixed $updated_at
  */
 class JiraTeam extends Model
 {
