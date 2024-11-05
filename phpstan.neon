@@ -1,0 +1,45 @@
+parameters:
+    level: 6
+    checkDynamicProperties: false
+    treatPhpDocTypesAsCertain: false
+    exceptions:
+        check:
+            missingCheckedExceptionInThrows: true
+            tooWideThrowType: true
+    excludePaths:
+        analyse:
+            - tests
+            - routes
+    ignoreErrors:
+        -
+            message: '#Call to an undefined method Illuminate\\Contracts\\Auth\\Authenticatable::[a-zA-Z0-9]+\(\)#'
+        -
+            message: '#Call to an undefined static method App\\Models\\v1\\[a-zA-Z0-9\\_]+::[a-zA-Z0-9]+\(\)#'
+        -
+            message: '#Class .* but does not specify its types: [a-zA-Z0-9]#'
+        -
+            message: "#.* has parameter .* with no value type specified in iterable type array.#"
+        -
+            message: "#Method .* has parameter .* with generic class .* but does not specify its types: [a-zA-Z0-9]#"
+        -
+            message: "#Method .* return type has no value type specified in iterable type array.#"
+        -
+            message: "#Method .* return type .* generic class .* does not specify its types: [a-zA-Z0-9].#"
+        -
+            message: "#Method .* throws checked exception BadMethodCallException but it's missing from the PHPDoc @throws tag.#"
+        -
+            message: "#Method .* throws checked exception .*Exception but it's missing from the PHPDoc @throws tag.#"
+        -
+            message: "#Method .* throws checked exception .*ExpectationFailedException but it's missing from the PHPDoc @throws tag.#"
+        -
+            message: "#Method .* throws checked exception InvalidArgumentException but it's missing from the PHPDoc @throws tag.#"
+        -
+            message: "#Method .* throws checked exception LogicException but it's missing from the PHPDoc @throws tag.#"
+        -
+            message: "#Method .* throws checked exception OverflowException but it's missing from the PHPDoc @throws tag.#"
+        -
+            message: "#Method .* throws checked exception RuntimeException but it's missing from the PHPDoc @throws tag.#"
+        -
+            message: "#Property .* type has no value type specified in iterable type array.#"
+        -
+            message: '#Static call to instance method App\\Models\\v1\\[a-zA-Z0-9\\_]+::[a-zA-Z0-9]+\(\)#'

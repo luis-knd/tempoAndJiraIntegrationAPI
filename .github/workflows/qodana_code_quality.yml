@@ -1,0 +1,69 @@
+name: Qodana
+on:
+  workflow_dispatch:
+  pull_request:
+  push:
+    branches:
+      - main
+      - master
+      - 'feature/*'
+      - 'releases/*'
+
+jobs:
+  qodana:
+    runs-on: ubuntu-latest
+    permissions:
+      contents: write
+      pull-requests: write
+      checks: write
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          ref: ${{ github.event.pull_request.head.sha }}
+          fetch-depth: 0
+
+      - name: Configurar PHP
+        uses: shivammathur/setup-php@v2
+        with:
+          php-version: '8.3'
+          extensions: mbstring, intl, xml, ctype, json, fileinfo, tokenizer, dom, pdo_mysql, bcmath
+          ini-values: post_max_size=256M, max_execution_time=180
+          coverage: xdebug
+
+      - name: Configurar cache de Composer
+        uses: actions/cache@v3
+        with:
+          path: vendor
+          key: ${{ runner.os }}-composer-${{ hashFiles('**/composer.lock') }}
+          restore-keys: |
+            ${{ runner.os }}-composer-
+
+      - name: Crear directorio bootstrap/cache
+        run: mkdir -p bootstrap/cache
+
+      - name: Instalar dependencias
+        run: composer install --no-interaction --prefer-dist --optimize-autoloader
+
+      - name: Generar clave de aplicación
+        run: php artisan key:generate
+
+      - name: Ejecutar pruebas de PHPUnit con cobertura
+        env:
+          XDEBUG_MODE: coverage
+        run: vendor/bin/phpunit --coverage-clover=coverage.xml
+
+      - name: Cargar cobertura de PHPUnit
+        uses: codecov/codecov-action@v3
+        with:
+          files: coverage.xml
+
+      - name: Move coverage report
+        run: mkdir -p .qodana/code-coverage && mv coverage.xml .qodana/code-coverage
+
+      - name: 'Qodana Scan'
+        uses: JetBrains/qodana-action@v2024.1
+        with:
+          pr-mode: false
+        env:
+          QODANA_TOKEN: ${{ secrets.QODANA_TOKEN_253441483 }}
+          QODANA_ENDPOINT: 'https://qodana.cloud'
