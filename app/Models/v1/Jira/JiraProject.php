@@ -7,6 +7,7 @@ use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Relations\BelongsTo;
 use Illuminate\Database\Eloquent\Relations\HasMany;
+use Illuminate\Database\Eloquent\SoftDeletes;
 
 /**
  * Class JiraProject
@@ -28,6 +29,7 @@ class JiraProject extends Model
 {
     use HasFactory;
     use HasUuids;
+    use SoftDeletes;
 
     protected $table = 'jira_projects';
     protected $fillable = [

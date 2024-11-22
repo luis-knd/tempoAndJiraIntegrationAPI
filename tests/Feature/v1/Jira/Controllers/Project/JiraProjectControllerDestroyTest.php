@@ -46,7 +46,7 @@ class JiraProjectControllerDestroyTest extends TestCase
             'status' => Response::HTTP_OK,
             'errors' => []
         ]);
-        $this->assertDatabaseMissing('jira_projects', ['id' => $project->id]);
+        $this->assertSoftDeleted('jira_projects', ['id' => $project->id]);
     }
 
     #[Test]

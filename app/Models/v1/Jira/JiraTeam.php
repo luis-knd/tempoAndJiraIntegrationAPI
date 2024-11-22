@@ -6,6 +6,7 @@ use Illuminate\Database\Eloquent\Concerns\HasUuids;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Relations\BelongsToMany;
+use Illuminate\Database\Eloquent\SoftDeletes;
 
 /**
  * Class JiraTeam
@@ -24,6 +25,7 @@ class JiraTeam extends Model
 {
     use HasFactory;
     use HasUuids;
+    use SoftDeletes;
 
     protected $table = 'jira_teams';
     protected $keyType = 'string';
