@@ -63,10 +63,10 @@ abstract class BaseRepository implements RepositoryInterface
      * Find records by parameters.
      *
      * @param array $params The search parameters. Each parameter is an array with the following structure:
-     *                     [key, value] or [key, option, value].
-     * @param array $with The relationships to eager load.
-     * @param array $order The fields to order by and their direction.
-     * @param array $page The pagination parameters.
+     *                      [key, value] or [key, option, value].
+     * @param array $with   The relationships to eager load.
+     * @param array $order  The fields to order by and their direction.
+     * @param array $page   The pagination parameters.
      * @return LengthAwarePaginator|Collection
      * @throws BadRequestException If a parameter has an invalid structure.
      */
@@ -110,10 +110,10 @@ abstract class BaseRepository implements RepositoryInterface
     /**
      * Process the parameter for the query.
      *
-     * @param Builder|Model $query The query builder or model instance.
-     * @param string $key The key for the parameter.
-     * @param array|string|null $values The value(s) for the parameter.
-     * @param string $operator The comparison operator (default is '=').
+     * @param Builder|Model     $query    The query builder or model instance.
+     * @param string            $key      The key for the parameter.
+     * @param array|string|null $values   The value(s) for the parameter.
+     * @param string            $operator The comparison operator (default is '=').
      * @return Builder The modified query builder instance.
      */
     protected function processParam(
@@ -125,26 +125,31 @@ abstract class BaseRepository implements RepositoryInterface
         if (!is_array($values)) {
             $values = [$values];
         }
-        foreach ($values as $value) {
-            if ($operator === 'IN') {
-                $query->whereIn($key, $values);
-            } elseif ($operator === 'NOT IN') {
-                $query->whereNotIn($key, $values);
-            } elseif ($value instanceof DateTime) {
-                $query->whereDate($key, $operator, $value);
-            } elseif (($value === '' || $value === null) && $operator === '=') {
-                $query->where(function (Builder|Model $query) use ($key, $value) {
-                    $query->whereNull($key)->orWhere($key, $value);
-                });
-            } elseif (($value === '' || $value === null) && $operator === '!=') {
-                $query->where(function (Builder|Model $query) use ($key, $value) {
-                    $query->whereNotNull($key)->orWhere($key, '!=', $value);
-                });
-            } elseif ($operator === 'like') {
-                $value = $this->scapeWildcards($value);
-                $query->where($key, $operator, $value);
-            } else {
-                $query->where($key, $operator, $value);
+
+        if ($operator === 'IN') {
+            $query->whereIn($key, $values);
+        } elseif ($operator === 'NOT IN') {
+            $query->whereNotIn($key, $values);
+        } elseif ($operator === 'between') {
+            $query->whereBetween($key, $values);
+        } else {
+            foreach ($values as $value) {
+                if ($value instanceof DateTime) {
+                    $query->whereDate($key, $operator, $value);
+                } elseif (($value === '' || $value === null) && $operator === '=') {
+                    $query->where(function (Builder|Model $query) use ($key, $value) {
+                        $query->whereNull($key)->orWhere($key, $value);
+                    });
+                } elseif (($value === '' || $value === null) && $operator === '!=') {
+                    $query->where(function (Builder|Model $query) use ($key, $value) {
+                        $query->whereNotNull($key)->orWhere($key, '!=', $value);
+                    });
+                } elseif ($operator === 'like') {
+                    $value = $this->scapeWildcards($value);
+                    $query->where($key, $operator, $value);
+                } else {
+                    $query->where($key, $operator, $value);
+                }
             }
         }
         return $query;

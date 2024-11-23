@@ -34,8 +34,8 @@ class TimeEntryFactory extends Factory
             },
             'time_spent_in_minutes' => $this->faker->numberBetween(15, 480),
             'description' => $this->faker->sentence(),
-            'entry_created_at' => $this->faker->dateTimeBetween('-1 year'),
-            'entry_updated_at' => $this->faker->dateTimeBetween('-1 year')
+            'entry_created_at' => $this->faker->dateTimeBetween('-1 year')->format('Y-m-d H:i:s'),
+            'entry_updated_at' => $this->faker->dateTimeBetween('-1 year')->format('Y-m-d H:i:s')
         ];
     }
 }

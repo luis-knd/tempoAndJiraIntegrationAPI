@@ -25,7 +25,7 @@ class TimeEntryRequest extends BaseRequest
         'jira_user_id',
         'time_spent_in_minutes',
         'entry_created_at',
-        'entry_updated_at'
+        'entry_updated_at',
     ];
 
     /**
@@ -59,8 +59,8 @@ class TimeEntryRequest extends BaseRequest
      * @var array<string, array>
      */
     protected array $relations = [
-        'jira_issues' => [],
-        'jira_users' => [],
+        'issue' => [],
+        'jira_user' => [],
     ];
 
     /**
@@ -88,6 +88,7 @@ class TimeEntryRequest extends BaseRequest
         return match ($this->getMethod()) {
             'GET' => $this->rulesForGet(),
             'POST' => $this->rulesForPost(),
+            'PUT' => $this->rulesForPut(),
             default => [],
         };
     }
@@ -113,13 +114,21 @@ class TimeEntryRequest extends BaseRequest
     private function rulesForPost(): array
     {
         return [
-            'tempo_worklog_id' => 'required|numeric|min:0',
+            'tempo_worklog_id' => 'required|unique:time_entries,tempo_worklog_id|numeric|min:0',
             'jira_issue_id' => 'required|numeric|min:0|exists:jira_issues,jira_issue_id',
-            'jira_user_id' => 'required|numeric|min:0|exists:jira_users,jira_user_id',
+            'jira_user_id' => 'required|string|exists:jira_users,jira_user_id',
             'time_spent_in_minutes' => 'required|numeric|min:0',
             'description' => 'required|string',
             'entry_created_at' => 'required|date',
             'entry_updated_at' => 'required|date',
+        ];
+    }
+
+    private function rulesForPut(): array
+    {
+        return [
+            'time_spent_in_minutes' => 'required|numeric|min:0',
+            'description' => 'required|string',
         ];
     }
 }
