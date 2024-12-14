@@ -3,6 +3,7 @@
 namespace App\Http\Resources\v1\Jira;
 
 use App\Http\Resources\FieldsResourceTraits;
+use App\Models\v1\Jira\JiraIssue;
 use App\Models\v1\Jira\JiraProject;
 use Illuminate\Http\JsonResponse;
 use Illuminate\Http\Request;
@@ -21,6 +22,7 @@ use Illuminate\Http\Resources\Json\JsonResource;
  * @property mixed $jira_project_category_id
  * @property mixed $jiraProjectCategory
  * @property mixed $jira_project_key
+ * @property mixed $jiraIssues
  * @method relationLoaded(string $string)
  */
 class JiraProjectResource extends JsonResource
@@ -35,7 +37,14 @@ class JiraProjectResource extends JsonResource
     public function toArray(Request $request): array
     {
         $this->init($request);
-        return [
+        $jiraIssues = $this->when(
+            $this->relationLoaded('jiraIssues') && $this->depthLevel(),
+            function () {
+                return JiraIssueResource::collection($this->jiraIssues);
+            },
+            null
+        );
+        $response = [
             'jira_project_id' => $this->when($this->include('jira_project_id'), $this->jira_project_id),
             'jira_project_key' => $this->when($this->include('jira_project_key'), $this->jira_project_key),
             'name' => $this->when($this->include('name'), $this->name),
@@ -52,5 +61,11 @@ class JiraProjectResource extends JsonResource
                 ]
             )
         ];
+
+        if ($jiraIssues) {
+            $response['issues'] = $jiraIssues;
+        }
+
+        return $response;
     }
 }

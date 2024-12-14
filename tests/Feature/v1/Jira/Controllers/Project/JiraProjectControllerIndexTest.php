@@ -4,7 +4,9 @@ namespace Tests\Feature\v1\Jira\Controllers\Project;
 
 use App\Exceptions\UnprocessableException;
 use App\Http\Requests\v1\Jira\JiraProjectRequest;
+use App\Models\v1\Jira\JiraIssue;
 use App\Models\v1\Jira\JiraProject;
+use App\Models\v1\Jira\JiraProjectCategory;
 use App\Services\v1\Jira\JiraProjectService;
 use Illuminate\Foundation\Testing\RefreshDatabase;
 use JsonException;
@@ -230,7 +232,7 @@ class JiraProjectControllerIndexTest extends TestCase
                         "jira_project_id" => $projectsFromDb[1]->jira_project_id,
                         "name" => 'Liquido',
                         "category" => [
-                            "jira_category_id" =>  $projectsFromDb[1]->jira_project_category_id,
+                            "jira_category_id" => $projectsFromDb[1]->jira_project_category_id,
                         ],
                         "jira_project_key" => 'LIQUIDO'
                     ]
@@ -286,5 +288,69 @@ class JiraProjectControllerIndexTest extends TestCase
             'message' => 'OK',
             'errors' => []
         ]);
+    }
+
+    #[Test]
+    public function it_returns_a_project_with_category_and_issues_relations(): void // phpcs:ignore
+    {
+        $this->loginWithFakeUser();
+        /** @var JiraProjectCategory $jiraProjectCategory */
+        $jiraProjectCategory = JiraProjectCategory::factory()->create();
+
+        /** @var JiraProject $jiraProject */
+        $jiraProject = JiraProject::factory()->create(
+            ['jira_project_category_id' => $jiraProjectCategory->jira_category_id]
+        )->first();
+
+        JiraIssue::factory()->count(1)->create(
+            ['jira_project_id' => $jiraProject->jira_project_id]
+        );
+        $response = $this->getJson("$this->apiBaseUrl/$this->urlPath?relations=jira_project_category,jira_issues");
+        $response->assertStatus(Response::HTTP_OK);
+        $response->assertJsonStructure(
+            [
+                'data' => [
+                    'jira_projects' => [
+                        [
+                            'jira_project_id',
+                            'jira_project_key',
+                            'name',
+                            'category' => [
+                                'jira_category_id',
+                                'name',
+                                'description',
+                            ],
+                            'issues' => [
+                                [
+                                    'jira_issue_id',
+                                    'jira_issue_key',
+                                    'project' => [
+                                        'jira_project_id',
+                                        'jira_project_key',
+                                        'name',
+                                        'category' => [
+                                            'jira_category_id',
+                                        ],
+                                    ],
+                                    'summary',
+                                    'development_category',
+                                    'status',
+                                    'created_at',
+                                    'updated_at',
+                                ]
+                            ]
+                        ]
+                    ],
+                    'total',
+                    'count',
+                    'per_page',
+                    'current_page',
+                    'total_pages',
+                ],
+                'status',
+                'message',
+                'errors',
+            ]
+        );
     }
 }

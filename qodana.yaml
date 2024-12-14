@@ -21,11 +21,11 @@ licenseRules:
       - BSD-3-Clause-Clear
 failureConditions:
   severityThresholds:
-    any: 50
-    critical: 1
-    high: 2
-    moderate: 3
-    low: 4
+    any: 30
+    critical: 2
+    high: 3
+    moderate: 4
+    low: 5
     info: 5
   testCoverageThresholds:
     fresh: 80
