@@ -48,6 +48,7 @@ class TimeEntryController extends Controller
     public function store(TimeEntryRequest $request): JsonResponse
     {
         $validatedData = $request->validated();
+        Gate::authorize('create', TimeEntry::class);
         $timeEntry = $this->timeEntryService->make($validatedData);
         return TimeEntryResource::toJsonResponse($timeEntry);
     }

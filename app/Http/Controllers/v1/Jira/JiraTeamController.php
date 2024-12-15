@@ -49,6 +49,7 @@ class JiraTeamController extends Controller
     public function store(JiraTeamRequest $request): JsonResponse
     {
         $validatedData = $request->validated();
+        Gate::authorize('create', JiraTeam::class);
         $jiraTeam = $this->jiraTeamService->make($validatedData);
         return JiraTeamResource::toJsonResponse($jiraTeam);
     }
