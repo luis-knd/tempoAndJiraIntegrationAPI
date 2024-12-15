@@ -4,7 +4,7 @@ namespace App\Http\Controllers\v1\Jira;
 
 use App\Exceptions\UnprocessableException;
 use App\Http\Controllers\Controller;
-use App\Http\Requests\v1\Jira\JiraTeamRequest;
+use App\Http\Requests\v1\Auth\v1\Jira\JiraTeamRequest;
 use App\Http\Resources\v1\Jira\JiraTeamCollection;
 use App\Http\Resources\v1\Jira\JiraTeamResource;
 use App\Models\v1\Jira\JiraTeam;

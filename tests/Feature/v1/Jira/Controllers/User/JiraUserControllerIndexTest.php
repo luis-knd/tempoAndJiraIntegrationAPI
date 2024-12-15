@@ -3,16 +3,16 @@
 namespace Tests\Feature\v1\Jira\Controllers\User;
 
 use App\Exceptions\BadRequestException;
-use App\Http\Requests\v1\Jira\JiraUserRequest;
+use App\Http\Requests\v1\Auth\v1\Jira\JiraUserRequest;
 use App\Models\v1\Jira\JiraTeam;
 use App\Models\v1\Jira\JiraUser;
 use App\Services\v1\Jira\JiraUserService;
-use Symfony\Component\HttpFoundation\Response;
 use Illuminate\Foundation\Testing\RefreshDatabase;
-use PHPUnit\Framework\Attributes\Test;
-use Tests\TestCase;
 use JsonException;
 use Mockery\MockInterface;
+use PHPUnit\Framework\Attributes\Test;
+use Symfony\Component\HttpFoundation\Response;
+use Tests\TestCase;
 
 class JiraUserControllerIndexTest extends TestCase
 {

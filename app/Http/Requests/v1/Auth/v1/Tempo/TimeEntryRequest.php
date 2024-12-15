@@ -1,6 +1,6 @@
 <?php
 
-namespace App\Http\Requests\v1\Tempo;
+namespace App\Http\Requests\v1\Auth\v1\Tempo;
 
 use App\Http\Requests\BaseRequest;
 use App\Http\Requests\SanitizesInput;

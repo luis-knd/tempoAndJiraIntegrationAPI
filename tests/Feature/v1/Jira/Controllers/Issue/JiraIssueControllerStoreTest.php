@@ -1,6 +1,6 @@
 <?php
 
-namespace Feature\v1\Jira\Controllers\Issue;
+namespace Tests\Feature\v1\Jira\Controllers\Issue;
 
 use App\Models\v1\Jira\JiraIssue;
 use App\Models\v1\Jira\JiraProject;

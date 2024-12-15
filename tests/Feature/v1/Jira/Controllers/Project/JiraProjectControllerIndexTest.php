@@ -3,7 +3,7 @@
 namespace Tests\Feature\v1\Jira\Controllers\Project;
 
 use App\Exceptions\UnprocessableException;
-use App\Http\Requests\v1\Jira\JiraProjectRequest;
+use App\Http\Requests\v1\Auth\v1\Jira\JiraProjectRequest;
 use App\Models\v1\Jira\JiraIssue;
 use App\Models\v1\Jira\JiraProject;
 use App\Models\v1\Jira\JiraProjectCategory;

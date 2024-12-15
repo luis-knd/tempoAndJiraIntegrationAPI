@@ -1,6 +1,6 @@
 <?php
 
-namespace Feature\v1\Jira\Jobs;
+namespace Tests\Feature\v1\Jira\Jobs;
 
 use App\Jobs\v1\Jira\FetchJiraIssuesJob;
 use App\Jobs\v1\Jira\FetchJiraProjectsJob;
@@ -23,6 +23,9 @@ class FetchJiraIssuesJobTest extends TestCase
     private string $jql;
     protected JiraApiService|MockObject $jiraApiServiceMock;
 
+    /**
+     * @throws \PHPUnit\Framework\MockObject\Exception
+     */
     public function setUp(): void
     {
         parent::setUp();

@@ -6,12 +6,13 @@
     "license": "MIT",
     "require": {
         "php": "^8.2",
+        "ext-pdo": "*",
         "dedoc/scramble": "^0.11.1",
         "doctrine/dbal": "^4.0",
-        "laravel/framework": "11.31.0.0",
+        "laravel/framework": "11.35.1",
         "laravel/tinker": "^2.9",
-        "tymon/jwt-auth": "^2.1",
-        "ext-pdo": "*"
+        "mews/purifier": "^3.4",
+        "tymon/jwt-auth": "^2.1"
     },
     "require-dev": {
         "roave/security-advisories": "dev-latest",

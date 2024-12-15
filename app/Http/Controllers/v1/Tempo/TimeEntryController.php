@@ -4,7 +4,7 @@ namespace App\Http\Controllers\v1\Tempo;
 
 use App\Exceptions\UnprocessableException;
 use App\Http\Controllers\Controller;
-use App\Http\Requests\v1\Tempo\TimeEntryRequest;
+use App\Http\Requests\v1\Auth\v1\Tempo\TimeEntryRequest;
 use App\Http\Resources\v1\Tempo\TimeEntryCollection;
 use App\Http\Resources\v1\Tempo\TimeEntryResource;
 use App\Models\v1\Tempo\TimeEntry;

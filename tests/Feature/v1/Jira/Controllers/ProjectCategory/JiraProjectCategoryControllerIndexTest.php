@@ -3,7 +3,7 @@
 namespace Tests\Feature\v1\Jira\Controllers\ProjectCategory;
 
 use App\Exceptions\BadRequestException;
-use App\Http\Requests\v1\Jira\JiraProjectCategoryRequest;
+use App\Http\Requests\v1\Auth\v1\Jira\JiraProjectCategoryRequest;
 use App\Models\v1\Jira\JiraProjectCategory;
 use App\Services\v1\Jira\JiraProjectCategoryService;
 use Faker\Factory;
