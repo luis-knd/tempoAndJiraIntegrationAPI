@@ -1,0 +1,54 @@
+name: SonarCloud Scan
+
+on:
+  push:
+    branches:
+      - main
+      - master
+      - 'feature/*'
+      - 'releases/*'
+  pull_request:
+    branches:
+      - main
+      - master
+      - 'feature/*'
+      - 'releases/*'
+
+jobs:
+  sonarcloud:
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Checkout source code
+        uses: actions/checkout@v4
+
+      - name: Setup PHP
+        uses: shivammathur/setup-php@v2
+        with:
+          php-version: '8.3'
+          extensions: mbstring, intl, xml, ctype, json, fileinfo, tokenizer, dom, pdo_mysql, bcmath
+
+      - name: Ensure bootstrap/cache exists
+        run: mkdir -p bootstrap/cache && chmod -R 777 bootstrap/cache
+
+      - name: Install dependencies
+        run: composer install --no-interaction --prefer-dist --optimize-autoloader
+
+      - name: Run Laravel commands
+        run: |
+          cp .env.example .env
+          php artisan key:generate
+
+      - name: Run SonarCloud Scan
+        uses: SonarSource/sonarcloud-github-action@v2
+        env:
+          SONAR_TOKEN: ${{ secrets.SONAR_TOKEN }}
+        with:
+          projectBaseDir: .
+          args: >
+            -Dsonar.projectKey=${{ secrets.SONAR_PROJECT_KEY }}
+            -Dsonar.organization=${{ secrets.SONAR_ORGANIZATION }}
+            -Dsonar.host.url=${{ secrets.SONAR_HOST_URL }}
+            -Dsonar.login=${{ secrets.SONAR_TOKEN }}
+            -Dsonar.php.tests.reportPath=coverage.xml
+            -Dsonar.branch.name=${{ github.ref_name }}
