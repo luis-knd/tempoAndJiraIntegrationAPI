@@ -16,6 +16,7 @@ use Illuminate\Database\Eloquent\Relations\BelongsTo;
  * @copyright 08-2024 Lcandesign
  * @author    Luis Candelario <lcandelario@lcandesign.com>
  *
+ * @property mixed $id
  * @property mixed $tempo_worklog_id
  * @property mixed $jira_issue_id
  * @property mixed $jira_user_id
@@ -23,6 +24,8 @@ use Illuminate\Database\Eloquent\Relations\BelongsTo;
  * @property mixed $description
  * @property mixed $entry_created_at
  * @property mixed $entry_updated_at
+ * @property mixed $issue
+ * @property mixed $jiraUser
  * @method static updateOrCreate(array $whereCondition, array $parameters)
  * @method static where(string $columnName, mixed $value)
  * @method static first()
@@ -43,13 +46,15 @@ class TimeEntry extends Model
         'entry_updated_at'
     ];
 
+    protected $with = ['issue', 'jiraUser'];
+
     public function issue(): BelongsTo
     {
-        return $this->belongsTo(JiraIssue::class);
+        return $this->belongsTo(JiraIssue::class, 'jira_issue_id', 'jira_issue_id');
     }
 
     public function jiraUser(): BelongsTo
     {
-        return $this->belongsTo(JiraUser::class);
+        return $this->belongsTo(JiraUser::class, 'jira_user_id', 'jira_user_id');
     }
 }

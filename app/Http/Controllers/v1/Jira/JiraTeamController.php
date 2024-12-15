@@ -4,7 +4,7 @@ namespace App\Http\Controllers\v1\Jira;
 
 use App\Exceptions\UnprocessableException;
 use App\Http\Controllers\Controller;
-use App\Http\Requests\v1\Jira\JiraTeamRequest;
+use App\Http\Requests\v1\Auth\v1\Jira\JiraTeamRequest;
 use App\Http\Resources\v1\Jira\JiraTeamCollection;
 use App\Http\Resources\v1\Jira\JiraTeamResource;
 use App\Models\v1\Jira\JiraTeam;
@@ -49,6 +49,7 @@ class JiraTeamController extends Controller
     public function store(JiraTeamRequest $request): JsonResponse
     {
         $validatedData = $request->validated();
+        Gate::authorize('create', JiraTeam::class);
         $jiraTeam = $this->jiraTeamService->make($validatedData);
         return JiraTeamResource::toJsonResponse($jiraTeam);
     }
@@ -57,32 +58,32 @@ class JiraTeamController extends Controller
      *  show
      *
      * @param JiraTeamRequest $request
-     * @param JiraTeam        $jiraTeam
+     * @param JiraTeam               $team
      * @return JsonResponse
      * @throws UnprocessableException
      * @throws JsonException
      */
-    public function show(JiraTeamRequest $request, JiraTeam $jiraTeam): JsonResponse
+    public function show(JiraTeamRequest $request, JiraTeam $team): JsonResponse
     {
         $params = $request->validated();
-        Gate::authorize('view', $jiraTeam);
-        $team = $this->jiraTeamService->load($jiraTeam, $params);
+        Gate::authorize('view', $team);
+        $team = $this->jiraTeamService->load($team, $params);
         return JiraTeamResource::toJsonResponse($team);
     }
 
-    public function update(JiraTeamRequest $request, JiraTeam $jiraTeam): JsonResponse
+    public function update(JiraTeamRequest $request, JiraTeam $team): JsonResponse
     {
-        Gate::authorize('update', $jiraTeam);
+        Gate::authorize('update', $team);
         $params = $request->validated();
-        $updatedTeam = $this->jiraTeamService->update($jiraTeam, $params);
+        $updatedTeam = $this->jiraTeamService->update($team, $params);
         return JiraTeamResource::toJsonResponse($updatedTeam);
     }
 
-    public function destroy(JiraTeamRequest $request, JiraTeam $jiraTeam): JsonResponse
+    public function destroy(JiraTeamRequest $request, JiraTeam $team): JsonResponse
     {
         $request->validated();
-        Gate::authorize('delete', $jiraTeam);
-        $this->jiraTeamService->delete($jiraTeam);
+        Gate::authorize('delete', $team);
+        $this->jiraTeamService->delete($team);
         return jsonResponse(message: 'JiraTeam deleted successfully.');
     }
 }

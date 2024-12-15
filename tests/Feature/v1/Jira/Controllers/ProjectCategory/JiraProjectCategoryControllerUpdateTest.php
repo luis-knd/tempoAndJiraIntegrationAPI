@@ -22,15 +22,15 @@ class JiraProjectCategoryControllerUpdateTest extends TestCase
     #[Test]
     public function an_unauthenticated_user_cannot_update_a_project_category(): void // phpcs:ignore
     {
+        /** @var JiraProjectCategory $jiraProjectCategory */
         $jiraProjectCategory = JiraProjectCategory::factory()->create();
 
         $payload = [
-            'jira_category_id' => $jiraProjectCategory->jira_category_id, // @phpstan-ignore-line
+            'jira_category_id' => $jiraProjectCategory->jira_category_id,
             'name' => 'Updated Name',
             'description' => 'Updated Description'
         ];
 
-        // @phpstan-ignore-next-line
         $response = $this->putJson("$this->apiBaseUrl/$this->urlPath/$jiraProjectCategory->id", $payload);
 
         $response->assertStatus(Response::HTTP_UNAUTHORIZED);
@@ -45,18 +45,18 @@ class JiraProjectCategoryControllerUpdateTest extends TestCase
     public function an_authenticated_user_without_permission_cannot_update_a_project_category(): void // phpcs:ignore
     {
         $this->loginWithFakeUser();
+        /** @var JiraProjectCategory $jiraProjectCategory */
         $jiraProjectCategory = JiraProjectCategory::factory()->create();
         Gate::shouldReceive('authorize')
             ->with('update', Mockery::any())
             ->andThrow(AuthorizationException::class, 'This action is unauthorized.');
 
         $payload = [
-            'jira_category_id' => $jiraProjectCategory->jira_category_id, // @phpstan-ignore-line
+            'jira_category_id' => $jiraProjectCategory->jira_category_id,
             'name' => 'Unauthorized Update',
             'description' => 'Unauthorized Description'
         ];
 
-        // @phpstan-ignore-next-line
         $response = $this->putJson("$this->apiBaseUrl/$this->urlPath/$jiraProjectCategory->id", $payload);
 
         $response->assertStatus(Response::HTTP_UNAUTHORIZED);
@@ -70,22 +70,22 @@ class JiraProjectCategoryControllerUpdateTest extends TestCase
     public function an_authenticated_user_can_update_a_project_category_with_valid_data(): void // phpcs:ignore
     {
         $this->loginWithFakeUser();
+        /** @var JiraProjectCategory $jiraProjectCategory */
         $jiraProjectCategory = JiraProjectCategory::factory()->create();
 
         $payload = [
-            'jira_category_id' => $jiraProjectCategory->jira_category_id, // @phpstan-ignore-line
+            'jira_category_id' => $jiraProjectCategory->jira_category_id,
             'name' => 'Updated Name',
             'description' => 'Updated Description'
         ];
 
-        // @phpstan-ignore-next-line
         $response = $this->putJson("$this->apiBaseUrl/$this->urlPath/$jiraProjectCategory->id", $payload);
 
         $response->assertStatus(Response::HTTP_OK);
         $response->assertJsonFragment([
             'data' => [
                 'jira_project_category' => [
-                    'jira_category_id' => $jiraProjectCategory->jira_category_id, // @phpstan-ignore-line
+                    'jira_category_id' => $jiraProjectCategory->jira_category_id,
                     'name' => 'Updated Name',
                     'description' => 'Updated Description',
                 ],
@@ -100,6 +100,7 @@ class JiraProjectCategoryControllerUpdateTest extends TestCase
     public function an_authenticated_user_cannot_update_a_project_category_with_invalid_data(): void // phpcs:ignore
     {
         $this->loginWithFakeUser();
+        /** @var JiraProjectCategory $jiraProjectCategory */
         $jiraProjectCategory = JiraProjectCategory::factory()->create();
 
         $payload = [
@@ -107,7 +108,6 @@ class JiraProjectCategoryControllerUpdateTest extends TestCase
             'description' => ''
         ];
 
-        // @phpstan-ignore-next-line
         $response = $this->putJson("$this->apiBaseUrl/$this->urlPath/$jiraProjectCategory->id", $payload);
 
         $response->assertStatus(Response::HTTP_UNPROCESSABLE_ENTITY);
@@ -144,6 +144,7 @@ class JiraProjectCategoryControllerUpdateTest extends TestCase
     public function an_authenticated_user_cannot_update_the_jira_category_id(): void // phpcs:ignore
     {
         $this->loginWithFakeUser();
+        /** @var JiraProjectCategory $jiraProjectCategory */
         $jiraProjectCategory = JiraProjectCategory::factory()->create([
             'jira_category_id' => 'OLD-123',
         ]);
@@ -154,7 +155,6 @@ class JiraProjectCategoryControllerUpdateTest extends TestCase
             'description' => 'Updated Description'
         ];
 
-        // @phpstan-ignore-next-line
         $response = $this->putJson("$this->apiBaseUrl/$this->urlPath/$jiraProjectCategory->id", $payload);
 
         $response->assertStatus(Response::HTTP_OK);
@@ -172,12 +172,12 @@ class JiraProjectCategoryControllerUpdateTest extends TestCase
         ]);
 
         $this->assertDatabaseHas('jira_project_categories', [
-            'id' => $jiraProjectCategory->id, // @phpstan-ignore-line
+            'id' => $jiraProjectCategory->id,
             'jira_category_id' => 'OLD-123',
         ]);
 
         $this->assertDatabaseMissing('jira_project_categories', [
-            'id' => $jiraProjectCategory->id, // @phpstan-ignore-line
+            'id' => $jiraProjectCategory->id,
             'jira_category_id' => 'NEW-456',
         ]);
     }
@@ -186,6 +186,7 @@ class JiraProjectCategoryControllerUpdateTest extends TestCase
     public function an_authenticated_user_can_update_with_same_data_without_errors(): void // phpcs:ignore
     {
         $this->loginWithFakeUser();
+        /** @var JiraProjectCategory $jiraProjectCategory */
         $jiraProjectCategory = JiraProjectCategory::factory()->create([
             'name' => 'Same Name',
             'description' => 'Same Description',
@@ -196,14 +197,13 @@ class JiraProjectCategoryControllerUpdateTest extends TestCase
             'description' => 'Same Description',
         ];
 
-        // @phpstan-ignore-next-line
         $response = $this->putJson("$this->apiBaseUrl/$this->urlPath/$jiraProjectCategory->id", $payload);
 
         $response->assertStatus(Response::HTTP_OK);
         $response->assertJsonFragment([
             'data' => [
                 'jira_project_category' => [
-                    'jira_category_id' => $jiraProjectCategory->jira_category_id, // @phpstan-ignore-line
+                    'jira_category_id' => $jiraProjectCategory->jira_category_id,
                     'name' => 'Same Name',
                     'description' => 'Same Description',
                 ],
@@ -214,7 +214,7 @@ class JiraProjectCategoryControllerUpdateTest extends TestCase
         ]);
 
         $this->assertDatabaseHas('jira_project_categories', [
-            'id' => $jiraProjectCategory->id, // @phpstan-ignore-line
+            'id' => $jiraProjectCategory->id,
             'name' => 'Same Name',
             'description' => 'Same Description',
         ]);
@@ -224,6 +224,7 @@ class JiraProjectCategoryControllerUpdateTest extends TestCase
     public function an_authenticated_user_can_partially_update_a_project_category(): void // phpcs:ignore
     {
         $this->loginWithFakeUser();
+        /** @var JiraProjectCategory $jiraProjectCategory */
         $jiraProjectCategory = JiraProjectCategory::factory()->create([
             'name' => 'Original Name',
             'description' => 'Original Description',
@@ -232,14 +233,13 @@ class JiraProjectCategoryControllerUpdateTest extends TestCase
             'name' => 'Partially Updated Name',
         ];
 
-        // @phpstan-ignore-next-line
         $response = $this->putJson("$this->apiBaseUrl/$this->urlPath/$jiraProjectCategory->id", $payload);
 
         $response->assertStatus(Response::HTTP_OK);
         $response->assertJsonFragment([
             'data' => [
                 'jira_project_category' => [
-                    'jira_category_id' => $jiraProjectCategory->jira_category_id, // @phpstan-ignore-line
+                    'jira_category_id' => $jiraProjectCategory->jira_category_id,
                     'name' => 'Partially Updated Name',
                     'description' => 'Original Description',
                 ],
@@ -250,7 +250,7 @@ class JiraProjectCategoryControllerUpdateTest extends TestCase
         ]);
 
         $this->assertDatabaseHas('jira_project_categories', [
-            'id' => $jiraProjectCategory->id, // @phpstan-ignore-line
+            'id' => $jiraProjectCategory->id,
             'name' => 'Partially Updated Name',
             'description' => 'Original Description',
         ]);
@@ -260,6 +260,7 @@ class JiraProjectCategoryControllerUpdateTest extends TestCase
     public function an_authenticated_user_can_update_with_special_characters(): void // phpcs:ignore
     {
         $this->loginWithFakeUser();
+        /** @var JiraProjectCategory $jiraProjectCategory */
         $jiraProjectCategory = JiraProjectCategory::factory()->create();
 
         $payload = [
@@ -267,14 +268,13 @@ class JiraProjectCategoryControllerUpdateTest extends TestCase
             'description' => 'Description with <script>alert("XSS")</script>',
         ];
 
-        // @phpstan-ignore-next-line
         $response = $this->putJson("$this->apiBaseUrl/$this->urlPath/$jiraProjectCategory->id", $payload);
 
         $response->assertStatus(Response::HTTP_OK);
         $response->assertJsonFragment([
             'data' => [
                 'jira_project_category' => [
-                    'jira_category_id' => $jiraProjectCategory->jira_category_id, // @phpstan-ignore-line
+                    'jira_category_id' => $jiraProjectCategory->jira_category_id,
                     'name' => 'Name with special characters !@#$%^&*()',
                     'description' => '<p>Description with </p>',
                 ],
@@ -285,7 +285,7 @@ class JiraProjectCategoryControllerUpdateTest extends TestCase
         ]);
 
         $this->assertDatabaseHas('jira_project_categories', [
-            'id' => $jiraProjectCategory->id, // @phpstan-ignore-line
+            'id' => $jiraProjectCategory->id,
             'name' => 'Name with special characters !@#$%^&*()',
             'description' => '<p>Description with </p>',
         ]);
@@ -295,6 +295,7 @@ class JiraProjectCategoryControllerUpdateTest extends TestCase
     public function an_authenticated_user_cannot_update_with_excessively_long_data(): void // phpcs:ignore
     {
         $this->loginWithFakeUser();
+        /** @var JiraProjectCategory $jiraProjectCategory */
         $jiraProjectCategory = JiraProjectCategory::factory()->create();
 
         $longName = str_repeat('a', 256);
@@ -303,7 +304,6 @@ class JiraProjectCategoryControllerUpdateTest extends TestCase
             'name' => $longName,
         ];
 
-        // @phpstan-ignore-next-line
         $response = $this->putJson("$this->apiBaseUrl/$this->urlPath/$jiraProjectCategory->id", $payload);
 
         $response->assertStatus(Response::HTTP_UNPROCESSABLE_ENTITY);
@@ -316,9 +316,9 @@ class JiraProjectCategoryControllerUpdateTest extends TestCase
         ]);
 
         $this->assertDatabaseHas('jira_project_categories', [
-            'id' => $jiraProjectCategory->id, // @phpstan-ignore-line
-            'name' => $jiraProjectCategory->name, // @phpstan-ignore-line
-            'description' => $jiraProjectCategory->description, // @phpstan-ignore-line
+            'id' => $jiraProjectCategory->id,
+            'name' => $jiraProjectCategory->name,
+            'description' => $jiraProjectCategory->description,
         ]);
     }
 
@@ -326,6 +326,7 @@ class JiraProjectCategoryControllerUpdateTest extends TestCase
     public function an_authenticated_user_cannot_update_with_invalid_data_types(): void // phpcs:ignore
     {
         $this->loginWithFakeUser();
+        /** @var JiraProjectCategory $jiraProjectCategory */
         $jiraProjectCategory = JiraProjectCategory::factory()->create();
 
         $payload = [
@@ -333,7 +334,6 @@ class JiraProjectCategoryControllerUpdateTest extends TestCase
             'description' => true,
         ];
 
-        // @phpstan-ignore-next-line
         $response = $this->putJson("$this->apiBaseUrl/$this->urlPath/$jiraProjectCategory->id", $payload);
 
         $response->assertStatus(Response::HTTP_UNPROCESSABLE_ENTITY);
@@ -347,10 +347,10 @@ class JiraProjectCategoryControllerUpdateTest extends TestCase
         ]);
 
         $this->assertDatabaseHas('jira_project_categories', [
-            'id' => $jiraProjectCategory->id, // @phpstan-ignore-line
-            'jira_category_id' => $jiraProjectCategory->jira_category_id, // @phpstan-ignore-line
-            'name' => $jiraProjectCategory->name, // @phpstan-ignore-line
-            'description' => $jiraProjectCategory->description, // @phpstan-ignore-line
+            'id' => $jiraProjectCategory->id,
+            'jira_category_id' => $jiraProjectCategory->jira_category_id,
+            'name' => $jiraProjectCategory->name,
+            'description' => $jiraProjectCategory->description,
         ]);
     }
 
@@ -358,6 +358,7 @@ class JiraProjectCategoryControllerUpdateTest extends TestCase
     public function an_authenticated_user_cannot_update_a_soft_deleted_project_category(): void // phpcs:ignore
     {
         $this->loginWithFakeUser();
+        /** @var JiraProjectCategory $jiraProjectCategory */
         $jiraProjectCategory = JiraProjectCategory::factory()->create();
         $jiraProjectCategory->delete();
 
@@ -366,13 +367,12 @@ class JiraProjectCategoryControllerUpdateTest extends TestCase
             'description' => 'Attempted Update Description',
         ];
 
-        // @phpstan-ignore-next-line
         $response = $this->putJson("$this->apiBaseUrl/$this->urlPath/$jiraProjectCategory->id", $payload);
 
         $response->assertStatus(Response::HTTP_UNPROCESSABLE_ENTITY);
         $response->assertJsonFragment([
             'data' => [],
-            'message' => "Resource {$jiraProjectCategory->id} not found.", // @phpstan-ignore-line
+            'message' => "Resource $jiraProjectCategory->id not found.",
             'errors' => []
         ]);
     }
@@ -381,6 +381,7 @@ class JiraProjectCategoryControllerUpdateTest extends TestCase
     public function an_authenticated_user_can_update_with_null_values_if_allowed(): void // phpcs:ignore
     {
         $this->loginWithFakeUser();
+        /** @var JiraProjectCategory $jiraProjectCategory */
         $jiraProjectCategory = JiraProjectCategory::factory()->create([
             'description' => 'Original Description',
         ]);
@@ -390,14 +391,13 @@ class JiraProjectCategoryControllerUpdateTest extends TestCase
             'description' => null,
         ];
 
-        // @phpstan-ignore-next-line
         $response = $this->putJson("$this->apiBaseUrl/$this->urlPath/$jiraProjectCategory->id", $payload);
 
         $response->assertStatus(Response::HTTP_OK);
         $response->assertJsonFragment([
             'data' => [
                 'jira_project_category' => [
-                    'jira_category_id' => $jiraProjectCategory->jira_category_id, // @phpstan-ignore-line
+                    'jira_category_id' => $jiraProjectCategory->jira_category_id,
                     'name' => 'Updated Name',
                     'description' => null,
                 ],
@@ -408,8 +408,8 @@ class JiraProjectCategoryControllerUpdateTest extends TestCase
         ]);
 
         $this->assertDatabaseHas('jira_project_categories', [
-            'id' => $jiraProjectCategory->id, // @phpstan-ignore-line
-            'jira_category_id' => $jiraProjectCategory->jira_category_id, // @phpstan-ignore-line
+            'id' => $jiraProjectCategory->id,
+            'jira_category_id' => $jiraProjectCategory->jira_category_id,
             'name' => 'Updated Name',
             'description' => null,
         ]);
@@ -419,9 +419,10 @@ class JiraProjectCategoryControllerUpdateTest extends TestCase
     public function it_handles_json_response_attachment_exception_during_update(): void // phpcs:ignore
     {
         $this->loginWithFakeUser();
+        /** @var JiraProjectCategory $jiraProjectCategory */
         $jiraProjectCategory = JiraProjectCategory::factory()->create();
         $mockService = Mockery::mock(JiraProjectCategoryService::class);
-        $mockService->shouldReceive('update') // @phpstan-ignore-line
+        $mockService->shouldReceive('update') //@phpstan-ignore-line
             ->once()
             ->andThrow(new JsonResponseAttachment(
                 'Custom error message',
@@ -435,8 +436,7 @@ class JiraProjectCategoryControllerUpdateTest extends TestCase
             'description' => 'Updated Description'
         ];
 
-        // @phpstan-ignore-next-line
-        $response = $this->putJson("$this->apiBaseUrl/$this->urlPath/{$jiraProjectCategory->id}", $payload);
+        $response = $this->putJson("$this->apiBaseUrl/$this->urlPath/$jiraProjectCategory->id", $payload);
 
         $response->assertStatus(Response::HTTP_BAD_REQUEST);
         $response->assertJson([

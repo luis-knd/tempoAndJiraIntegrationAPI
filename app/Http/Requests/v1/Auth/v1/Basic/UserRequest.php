@@ -1,6 +1,6 @@
 <?php
 
-namespace App\Http\Requests\v1\Basic;
+namespace App\Http\Requests\v1\Auth\v1\Basic;
 
 use App\Http\Requests\BaseRequest;
 use App\Http\Requests\SanitizesInput;

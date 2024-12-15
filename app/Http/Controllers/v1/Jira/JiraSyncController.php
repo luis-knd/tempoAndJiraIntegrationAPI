@@ -3,7 +3,7 @@
 namespace App\Http\Controllers\v1\Jira;
 
 use App\Http\Controllers\Controller;
-use App\Http\Requests\v1\Jira\JiraSyncRequest;
+use App\Http\Requests\v1\Auth\v1\Jira\JiraSyncRequest;
 use App\Jobs\v1\Jira\FetchJiraIssuesJob;
 use App\Jobs\v1\Jira\FetchJiraProjectCategoriesJob;
 use App\Jobs\v1\Jira\FetchJiraProjectsJob;

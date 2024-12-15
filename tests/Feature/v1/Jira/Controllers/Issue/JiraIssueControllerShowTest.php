@@ -6,7 +6,6 @@ use App\Exceptions\UnprocessableException;
 use App\Models\v1\Jira\JiraIssue;
 use App\Services\v1\Jira\JiraIssueService;
 use Illuminate\Foundation\Testing\RefreshDatabase;
-use Illuminate\Support\Str;
 use PHPUnit\Framework\Attributes\Test;
 use Symfony\Component\HttpFoundation\Response;
 use Tests\TestCase;
@@ -60,10 +59,10 @@ class JiraIssueControllerShowTest extends TestCase
     public function invalid_parameters_in_request_should_return_unprocessable_entity(): void // phpcs:ignore
     {
         $this->loginWithFakeUser();
+        /** @var JiraIssue $jiraIssue */
         $jiraIssue = JiraIssue::factory()->create();
         $nonExistentModel = 'invalid_model_relation';
 
-        // @phpstan-ignore-next-line
         $response = $this->getJson("$this->apiBaseUrl/$this->urlPath/$jiraIssue->id?relations=$nonExistentModel");
 
         $response->assertStatus(Response::HTTP_UNPROCESSABLE_ENTITY);
@@ -97,10 +96,10 @@ class JiraIssueControllerShowTest extends TestCase
     public function an_authenticated_user_can_get_an_issue_with_valid_relations(): void // phpcs:ignore
     {
         $this->loginWithFakeUser();
+        /** @var JiraIssue $jiraIssue */
         $jiraIssue = JiraIssue::factory()->create();
         $jiraIssue->load('jiraProjects');
 
-        // @phpstan-ignore-next-line
         $response = $this->getJson("$this->apiBaseUrl/$this->urlPath/$jiraIssue->id?relations=jira_projects");
 
         $response->assertStatus(Response::HTTP_OK);
@@ -138,10 +137,10 @@ class JiraIssueControllerShowTest extends TestCase
     public function multiple_users_can_access_the_same_issue_simultaneously(): void // phpcs:ignore
     {
         $this->loginWithFakeUser();
+        /** @var JiraIssue $jiraIssue */
         $jiraIssue = JiraIssue::factory()->create();
 
         $responses = collect(range(1, 10))->map(function () use ($jiraIssue) {
-            // @phpstan-ignore-next-line
             return $this->getJson("$this->apiBaseUrl/$this->urlPath/$jiraIssue->id");
         });
 

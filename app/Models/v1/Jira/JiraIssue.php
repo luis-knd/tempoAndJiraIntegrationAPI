@@ -26,6 +26,7 @@ use Illuminate\Database\Eloquent\Relations\BelongsTo;
  * @property mixed $updated_at
  * @method static updateOrCreate(array $whereCondition, array $parameters)
  * @method static first()
+ * @method static skip(int $int)
  */
 class JiraIssue extends Model
 {

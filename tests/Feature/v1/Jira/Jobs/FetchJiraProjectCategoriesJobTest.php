@@ -1,6 +1,6 @@
 <?php
 
-namespace Feature\v1\Jira\Jobs;
+namespace Tests\Feature\v1\Jira\Jobs;
 
 use App\Jobs\v1\Jira\FetchJiraProjectCategoriesJob;
 use App\Services\v1\Jira\JiraApiService;
@@ -29,6 +29,9 @@ class FetchJiraProjectCategoriesJobTest extends TestCase
         $this->assertDatabaseCount('jira_project_categories', 8);
     }
 
+    /**
+     * @throws \PHPUnit\Framework\MockObject\Exception
+     */
     #[Test]
     public function it_should_fetch_and_store_jira_categories_from_mock_api(): void // phpcs:ignore
     {
@@ -69,6 +72,9 @@ class FetchJiraProjectCategoriesJobTest extends TestCase
         $this->assertDatabaseCount('jira_project_categories', 4);
     }
 
+    /**
+     * @throws \PHPUnit\Framework\MockObject\Exception
+     */
     #[Test]
     public function it_should_handle_empty_jira_categories_response(): void // phpcs:ignore
     {

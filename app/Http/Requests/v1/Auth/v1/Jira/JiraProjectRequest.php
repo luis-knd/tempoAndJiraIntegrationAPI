@@ -1,6 +1,6 @@
 <?php
 
-namespace App\Http\Requests\v1\Jira;
+namespace App\Http\Requests\v1\Auth\v1\Jira;
 
 use App\Http\Requests\BaseRequest;
 use App\Http\Requests\SanitizesInput;
@@ -11,6 +11,15 @@ class JiraProjectRequest extends BaseRequest
 
     protected array $fieldsToStrip = ['jira_project_id', 'jira_project_key', 'name', 'jira_project_category_id'];
     protected array $fieldsToClean = [];
+
+    protected array $relations = [
+        'jira_issues' => [],
+        'jira_project_category' => []
+    ];
+
+    protected array $proxyFilters = [
+        'jira_issues.jira_issue_key' => ['mediate' => 'jira_issues_jira_issue_key'],
+    ];
 
     protected function prepareForValidation(): void
     {

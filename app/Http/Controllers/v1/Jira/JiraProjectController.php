@@ -5,7 +5,7 @@ namespace App\Http\Controllers\v1\Jira;
 use App\Exceptions\BadRequestException;
 use App\Exceptions\UnprocessableException;
 use App\Http\Controllers\Controller;
-use App\Http\Requests\v1\Jira\JiraProjectRequest;
+use App\Http\Requests\v1\Auth\v1\Jira\JiraProjectRequest;
 use App\Http\Resources\v1\Jira\JiraProjectCollection;
 use App\Http\Resources\v1\Jira\JiraProjectResource;
 use App\Models\v1\Jira\JiraProject;

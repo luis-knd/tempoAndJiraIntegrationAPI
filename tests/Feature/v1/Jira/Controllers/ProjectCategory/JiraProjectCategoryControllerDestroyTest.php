@@ -22,9 +22,9 @@ class JiraProjectCategoryControllerDestroyTest extends TestCase
     #[Test]
     public function an_unauthenticated_user_cannot_delete_a_project_category(): void // phpcs:ignore
     {
+        /** @var JiraProjectCategory $jiraProjectCategory */
         $jiraProjectCategory = JiraProjectCategory::factory()->create();
 
-        // @phpstan-ignore-next-line
         $response = $this->deleteJson("$this->apiBaseUrl/$this->urlPath/$jiraProjectCategory->id");
 
         $response->assertStatus(Response::HTTP_UNAUTHORIZED);
@@ -39,12 +39,13 @@ class JiraProjectCategoryControllerDestroyTest extends TestCase
     public function an_authenticated_user_without_permission_cannot_delete_a_project_category(): void // phpcs:ignore
     {
         $this->loginWithFakeUser();
+        /** @var JiraProjectCategory $jiraProjectCategory */
         $jiraProjectCategory = JiraProjectCategory::factory()->create();
         Gate::shouldReceive('authorize')
             ->with('delete', Mockery::any())
             ->andThrow(AuthorizationException::class, 'This action is unauthorized.');
 
-        // @phpstan-ignore-next-line
+
         $response = $this->deleteJson("$this->apiBaseUrl/$this->urlPath/$jiraProjectCategory->id");
 
         $response->assertStatus(Response::HTTP_UNAUTHORIZED);
@@ -58,9 +59,10 @@ class JiraProjectCategoryControllerDestroyTest extends TestCase
     public function an_authenticated_user_can_delete_a_project_category(): void // phpcs:ignore
     {
         $this->loginWithFakeUser();
+        /** @var JiraProjectCategory $jiraProjectCategory */
         $jiraProjectCategory = JiraProjectCategory::factory()->create();
 
-        // @phpstan-ignore-next-line
+
         $response = $this->deleteJson("$this->apiBaseUrl/$this->urlPath/$jiraProjectCategory->id");
 
         $response->assertStatus(Response::HTTP_OK);
@@ -70,7 +72,7 @@ class JiraProjectCategoryControllerDestroyTest extends TestCase
         ]);
 
         $this->assertSoftDeleted('jira_project_categories', [
-            'id' => $jiraProjectCategory->id, // @phpstan-ignore-line
+            'id' => $jiraProjectCategory->id,
         ]);
     }
 
@@ -78,14 +80,15 @@ class JiraProjectCategoryControllerDestroyTest extends TestCase
     public function an_authenticated_user_with_explicit_permission_can_delete_a_project_category(): void // phpcs:ignore
     {
         $this->loginWithFakeUser();
+        /** @var JiraProjectCategory $jiraProjectCategory */
         $jiraProjectCategory = JiraProjectCategory::factory()->create();
 
         Gate::shouldReceive('authorize')
             ->with('delete', Mockery::any())
             ->andReturn(true);
 
-        // @phpstan-ignore-next-line
-        $response = $this->deleteJson("$this->apiBaseUrl/$this->urlPath/{$jiraProjectCategory->id}");
+
+        $response = $this->deleteJson("$this->apiBaseUrl/$this->urlPath/$jiraProjectCategory->id");
 
         $response->assertStatus(Response::HTTP_OK);
         $response->assertJsonFragment([
@@ -94,7 +97,7 @@ class JiraProjectCategoryControllerDestroyTest extends TestCase
         ]);
 
         $this->assertSoftDeleted('jira_project_categories', [
-            'id' => $jiraProjectCategory->id, // @phpstan-ignore-line
+            'id' => $jiraProjectCategory->id,
         ]);
     }
 
@@ -117,16 +120,17 @@ class JiraProjectCategoryControllerDestroyTest extends TestCase
     public function an_authenticated_user_cannot_delete_a_soft_deleted_project_category(): void // phpcs:ignore
     {
         $this->loginWithFakeUser();
+        /** @var JiraProjectCategory $jiraProjectCategory */
         $jiraProjectCategory = JiraProjectCategory::factory()->create();
         $jiraProjectCategory->delete();
 
-        // @phpstan-ignore-next-line
+
         $response = $this->deleteJson("$this->apiBaseUrl/$this->urlPath/$jiraProjectCategory->id");
 
         $response->assertStatus(Response::HTTP_UNPROCESSABLE_ENTITY);
         $response->assertJsonFragment([
             'data' => [],
-            'message' => "Resource {$jiraProjectCategory->id} not found.", // @phpstan-ignore-line
+            'message' => "Resource $jiraProjectCategory->id not found.",
             'errors' => []
         ]);
     }
@@ -135,9 +139,10 @@ class JiraProjectCategoryControllerDestroyTest extends TestCase
     public function it_handles_json_response_attachment_exception_during_delete(): void // phpcs:ignore
     {
         $this->loginWithFakeUser();
+        /** @var JiraProjectCategory $jiraProjectCategory */
         $jiraProjectCategory = JiraProjectCategory::factory()->create();
         $mockService = Mockery::mock(JiraProjectCategoryService::class);
-        $mockService->shouldReceive('delete') // @phpstan-ignore-line
+        $mockService->shouldReceive('delete') //@phpstan-ignore-line
         ->once()
             ->andThrow(new JsonResponseAttachment(
                 'Custom error message',
@@ -146,8 +151,8 @@ class JiraProjectCategoryControllerDestroyTest extends TestCase
 
         $this->app->instance(JiraProjectCategoryService::class, $mockService);
 
-        // @phpstan-ignore-next-line
-        $response = $this->deleteJson("$this->apiBaseUrl/$this->urlPath/{$jiraProjectCategory->id}");
+
+        $response = $this->deleteJson("$this->apiBaseUrl/$this->urlPath/$jiraProjectCategory->id");
 
         $response->assertStatus(Response::HTTP_BAD_REQUEST);
         $response->assertJson([
@@ -160,17 +165,18 @@ class JiraProjectCategoryControllerDestroyTest extends TestCase
     public function it_handles_concurrent_deletion_attempts(): void // phpcs:ignore
     {
         $this->loginWithFakeUser();
+        /** @var JiraProjectCategory $jiraProjectCategory */
         $jiraProjectCategory = JiraProjectCategory::factory()->create();
 
-        // @phpstan-ignore-next-line
-        $response1 = $this->deleteJson("$this->apiBaseUrl/$this->urlPath/{$jiraProjectCategory->id}");
-        // @phpstan-ignore-next-line
-        $response2 = $this->deleteJson("$this->apiBaseUrl/$this->urlPath/{$jiraProjectCategory->id}");
+
+        $response1 = $this->deleteJson("$this->apiBaseUrl/$this->urlPath/$jiraProjectCategory->id");
+
+        $response2 = $this->deleteJson("$this->apiBaseUrl/$this->urlPath/$jiraProjectCategory->id");
 
         $response1->assertStatus(Response::HTTP_OK);
         $response2->assertStatus(Response::HTTP_UNPROCESSABLE_ENTITY);
         $response2->assertJsonFragment([
-            'message' => "Resource {$jiraProjectCategory->id} not found.", // @phpstan-ignore-line
+            'message' => "Resource $jiraProjectCategory->id not found.",
             'errors' => []
         ]);
     }

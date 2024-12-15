@@ -12,6 +12,7 @@ return new class extends Migration {
             $table->string('jira_team_id')->unique();
             $table->string('name');
             $table->timestamps();
+            $table->softDeletes();
         });
     }
 

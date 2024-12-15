@@ -1,6 +1,6 @@
 <?php
 
-namespace Feature\v1\Jira\Controllers;
+namespace Tests\Feature\v1\Jira\Controllers;
 
 use App\Jobs\v1\Jira\FetchJiraIssuesJob;
 use App\Jobs\v1\Jira\FetchJiraProjectCategoriesJob;

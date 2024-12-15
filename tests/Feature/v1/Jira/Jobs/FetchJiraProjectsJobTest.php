@@ -1,6 +1,6 @@
 <?php
 
-namespace Feature\v1\Jira\Jobs;
+namespace Tests\Feature\v1\Jira\Jobs;
 
 use App\Jobs\v1\Jira\FetchJiraProjectsJob;
 use App\Models\v1\Jira\JiraProjectCategory;
@@ -33,6 +33,9 @@ class FetchJiraProjectsJobTest extends TestCase
         ]);
     }
 
+    /**
+     * @throws \PHPUnit\Framework\MockObject\Exception
+     */
     #[Test]
     public function it_should_fetch_and_store_jira_projects_from_mock_api(): void  // phpcs:ignore
     {
@@ -64,6 +67,9 @@ class FetchJiraProjectsJobTest extends TestCase
         ]);
     }
 
+    /**
+     * @throws \PHPUnit\Framework\MockObject\Exception
+     */
     #[Test]
     public function it_should_not_store_project_with_missing_data(): void  // phpcs:ignore
     {
@@ -89,6 +95,9 @@ class FetchJiraProjectsJobTest extends TestCase
     }
 
 
+    /**
+     * @throws \PHPUnit\Framework\MockObject\Exception
+     */
     #[Test]
     public function it_should_not_store_project_with_invalid_category(): void // phpcs:ignore
     {
@@ -113,6 +122,9 @@ class FetchJiraProjectsJobTest extends TestCase
         $this->assertDatabaseMissing('jira_projects', ['jira_project_key' => 'INV']);
     }
 
+    /**
+     * @throws \PHPUnit\Framework\MockObject\Exception
+     */
     #[Test]
     public function it_should_handle_empty_jira_projects_response(): void // phpcs:ignore
     {
