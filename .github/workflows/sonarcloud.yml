@@ -5,14 +5,14 @@ on:
     branches:
       - main
       - master
-      - 'feature/*'
-      - 'releases/*'
+      - 'feature/**'
+      - 'releases/**'
   pull_request:
     branches:
       - main
       - master
-      - 'feature/*'
-      - 'releases/*'
+      - 'feature/**'
+      - 'releases/**'
 
 jobs:
   sonarcloud:
@@ -42,6 +42,7 @@ jobs:
       - name: Run SonarCloud Scan
         uses: SonarSource/sonarcloud-github-action@v2
         env:
+          GIT_HUB_TOKEN: ${{ secrets.GIT_HUB_TOKEN }}
           SONAR_TOKEN: ${{ secrets.SONAR_TOKEN }}
         with:
           projectBaseDir: .
